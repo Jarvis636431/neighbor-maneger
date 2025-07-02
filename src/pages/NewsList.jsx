@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 // import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import PageTable from '../../components/PageTable';
-import ConfirmDialog from '../../components/ConfirmDialog';
+import PageTable from '../components/PageTable';
+import ConfirmDialog from '../components/ConfirmDialog';
 // import axios from 'axios';
 
 // 模拟组件，实际项目中应该从UI库导入
