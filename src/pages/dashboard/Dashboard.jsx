@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SimpleDashboard = () => {
+const Dashboard = () => {
   return (
     <div style={{ padding: '20px' }}>
       <h1>简化版Dashboard - 不使用TDesign</h1>
@@ -96,4 +96,4 @@ const SimpleDashboard = () => {
   );
 };
 
-export default SimpleDashboard;
+export default Dashboard;

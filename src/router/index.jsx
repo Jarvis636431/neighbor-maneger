@@ -1,20 +1,20 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import SimpleLayout from '../components/SimpleLayout';
+import Layout from '../components/Layout';
 import PlaceholderPage from '../components/PlaceholderPage';
 
 // 页面组件导入
-import SimpleDashboard from '../pages/dashboard/SimpleDashboard';
+import Dashboard from '../pages/dashboard/Dashboard';
 import TeamList from '../pages/team/TeamList';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <SimpleLayout />,
+    element: <Layout />,
     children: [
       {
         index: true,
-        element: <SimpleDashboard />,
+        element: <Dashboard />,
       },
       {
         path: 'team',

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 
-const SimpleLayout = () => {
+const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -127,4 +127,4 @@ const SimpleLayout = () => {
   );
 };
 
-export default SimpleLayout;
+export default Layout;
