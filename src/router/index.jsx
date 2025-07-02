@@ -6,12 +6,12 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import LoginRedirect from '../components/LoginRedirect';
 
 // 页面组件导入
-import Dashboard from '../pages/dashboard/Dashboard';
-import TeamList from '../pages/team/TeamList';
-import ActivityList from '../pages/activity/ActivityList';
-import UserList from '../pages/user/UserList';
-import NewsList from '../pages/news/NewsList';
-import Login from '../pages/auth/Login';
+import Dashboard from '../pages/Dashboard';
+import TeamList from '../pages/TeamList';
+import ActivityList from '../pages/ActivityList';
+import UserList from '../pages/UserList';
+import NewsList from '../pages/NewsList';
+import Login from '../pages/Login';
 
 const router = createBrowserRouter([
   {
