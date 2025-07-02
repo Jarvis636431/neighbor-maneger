@@ -1,37 +1,20 @@
 import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
-import Layout from '../components/Layout';
+import SimpleLayout from '../components/SimpleLayout';
+import PlaceholderPage from '../components/PlaceholderPage';
 
 // 页面组件导入
-import Dashboard from '../pages/dashboard/Dashboard';
+import SimpleDashboard from '../pages/dashboard/SimpleDashboard';
 import TeamList from '../pages/team/TeamList';
-import TeamAudit from '../pages/team/TeamAudit';
-import TeamDetail from '../pages/team/TeamDetail';
-import ActivityList from '../pages/activity/ActivityList';
-import ActivityAudit from '../pages/activity/ActivityAudit';
-import ActivityDetail from '../pages/activity/ActivityDetail';
-import NewsEdit from '../pages/news/NewsEdit';
-import NewsList from '../pages/news/NewsList';
-import UserList from '../pages/user/UserList';
-import UserDetail from '../pages/user/UserDetail';
-import PointsList from '../pages/points/PointsList';
-import PointsAdjust from '../pages/points/PointsAdjust';
-import CheckinList from '../pages/checkin/CheckinList';
-import CheckinDetail from '../pages/checkin/CheckinDetail';
-import CarbonList from '../pages/carbon/CarbonList';
-import SystemSettings from '../pages/system/SystemSettings';
-import SystemLogs from '../pages/system/SystemLogs';
-import DataStatistics from '../pages/statistics/DataStatistics';
-import UserBehavior from '../pages/statistics/UserBehavior';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: <SimpleLayout />,
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: <SimpleDashboard />,
       },
       {
         path: 'team',
@@ -42,11 +25,11 @@ const router = createBrowserRouter([
           },
           {
             path: 'audit',
-            element: <TeamAudit />,
+            element: <PlaceholderPage title="队伍审核" />,
           },
           {
             path: 'detail/:id',
-            element: <TeamDetail />,
+            element: <PlaceholderPage title="队伍详情" />,
           },
         ],
       },
@@ -55,15 +38,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <ActivityList />,
+            element: <PlaceholderPage title="活动列表" />,
           },
           {
             path: 'audit',
-            element: <ActivityAudit />,
+            element: <PlaceholderPage title="活动审核" />,
           },
           {
             path: 'detail/:id',
-            element: <ActivityDetail />,
+            element: <PlaceholderPage title="活动详情" />,
           },
         ],
       },
@@ -72,15 +55,15 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'edit',
-            element: <NewsEdit />,
+            element: <PlaceholderPage title="新闻编辑" />,
           },
           {
             path: 'edit/:id',
-            element: <NewsEdit />,
+            element: <PlaceholderPage title="新闻编辑" />,
           },
           {
             path: 'list',
-            element: <NewsList />,
+            element: <PlaceholderPage title="新闻列表" />,
           },
         ],
       },
@@ -89,11 +72,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <UserList />,
+            element: <PlaceholderPage title="用户列表" />,
           },
           {
             path: 'detail/:id',
-            element: <UserDetail />,
+            element: <PlaceholderPage title="用户详情" />,
           },
         ],
       },
@@ -102,11 +85,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <PointsList />,
+            element: <PlaceholderPage title="积分列表" />,
           },
           {
             path: 'adjust',
-            element: <PointsAdjust />,
+            element: <PlaceholderPage title="积分调整" />,
           },
         ],
       },
@@ -115,11 +98,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <CheckinList />,
+            element: <PlaceholderPage title="签到列表" />,
           },
           {
             path: 'detail/:id',
-            element: <CheckinDetail />,
+            element: <PlaceholderPage title="签到详情" />,
           },
         ],
       },
@@ -128,7 +111,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <CarbonList />,
+            element: <PlaceholderPage title="碳积分列表" />,
           },
         ],
       },
@@ -137,11 +120,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'settings',
-            element: <SystemSettings />,
+            element: <PlaceholderPage title="系统设置" />,
           },
           {
             path: 'logs',
-            element: <SystemLogs />,
+            element: <PlaceholderPage title="系统日志" />,
           },
         ],
       },
@@ -150,11 +133,11 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'data',
-            element: <DataStatistics />,
+            element: <PlaceholderPage title="数据统计" />,
           },
           {
             path: 'behavior',
-            element: <UserBehavior />,
+            element: <PlaceholderPage title="用户行为" />,
           },
         ],
       },
