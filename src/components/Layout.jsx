@@ -6,6 +6,14 @@ const Layout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleLogout = () => {
+    // 清除登录状态
+    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('username');
+    // 跳转到登录页面
+    navigate('/login');
+  };
+
   const menuItems = [
     { path: '/', label: '首页', icon: '🏠' },
     { path: '/team/list', label: '队伍管理', icon: '👥' },
@@ -102,15 +110,30 @@ const Layout = () => {
           padding: '0 24px'
         }}>
           <h2 style={{ margin: 0, color: '#333' }}>绿邻居后台管理系统</h2>
-          <button style={{
-            background: 'none',
-            border: '1px solid #d9d9d9',
-            padding: '4px 15px',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}>
-            退出登录
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ color: '#666', fontSize: '14px' }}>
+              欢迎，{localStorage.getItem('username') || '用户'}
+            </span>
+            <button 
+              onClick={handleLogout}
+              style={{
+                background: 'none',
+                border: '1px solid #d9d9d9',
+                padding: '4px 15px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                color: '#666'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = '#f5f5f5';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = 'transparent';
+              }}
+            >
+              退出登录
+            </button>
+          </div>
         </div>
         
         {/* 内容区域 */}

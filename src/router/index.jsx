@@ -2,15 +2,30 @@ import React from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import Layout from '../components/Layout';
 import PlaceholderPage from '../components/PlaceholderPage';
+import ProtectedRoute from '../components/ProtectedRoute';
+import LoginRedirect from '../components/LoginRedirect';
 
 // 页面组件导入
 import Dashboard from '../pages/dashboard/Dashboard';
 import TeamList from '../pages/team/TeamList';
+import Login from '../pages/auth/Login';
 
 const router = createBrowserRouter([
   {
+    path: '/login',
+    element: (
+      <LoginRedirect>
+        <Login />
+      </LoginRedirect>
+    ),
+  },
+  {
     path: '/',
-    element: <Layout />,
+    element: (
+      <ProtectedRoute>
+        <Layout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
