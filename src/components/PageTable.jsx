@@ -171,7 +171,7 @@ const PageTable = ({
                         color: '#262626'
                       }}
                     >
-                      {column.cell ? column.cell({ row, value: row[column.key] }) : row[column.key]}
+                      {column.cell ? column.cell({ row, value: row[column.colKey || column.key] }) : row[column.colKey || column.key]}
                     </td>
                   ))}
                 </tr>

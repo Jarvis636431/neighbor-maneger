@@ -6,10 +6,14 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 // import axios from 'axios';
 
 // 模拟 UI 组件
-const Card = ({ children, ...props }) => (
-  <div style={{ background: '#fff', padding: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} {...props}>
-    {children}
-  </div>
+const Card = ({ children }) => (
+  <div style={{
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    padding: '24px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    border: '1px solid #e8e8e8'
+  }}>{children}</div>
 );
 
 const Tag = ({ theme, children, ...props }) => {
@@ -166,53 +170,25 @@ const UserList = () => {
   const fetchUserList = async () => {
     try {
       setLoading(true);
-      // TODO: 替换为实际的API调用
-      // const response = await axios.get('/api/users', {
-      //   params: {
-      //     page: pagination.current,
-      //     pageSize: pagination.pageSize,
-      //     search: searchValue,
-      //     status: statusFilter,
-      //   },
-      // });
-      // setTableData(response.data.list);
-      // setPagination(prev => ({ ...prev, total: response.data.total }));
       
-      // 模拟数据
-      setTimeout(() => {
-        const statuses = ['active', 'banned', 'pending'];
-        const genders = ['male', 'female'];
-        const mockData = Array.from({ length: pagination.pageSize }, (_, index) => {
-          const status = statuses[Math.floor(Math.random() * statuses.length)];
-          const gender = genders[Math.floor(Math.random() * genders.length)];
-          
-          return {
-            id: (pagination.current - 1) * pagination.pageSize + index + 1,
-            username: `user${(pagination.current - 1) * pagination.pageSize + index + 1}`,
-            nickname: `绿邻居${(pagination.current - 1) * pagination.pageSize + index + 1}`,
-            avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${index}`,
-            phone: `138****${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
-            email: `user${index + 1}@example.com`,
-            gender: gender,
-            age: Math.floor(Math.random() * 50) + 18,
-            status: status,
-            points: Math.floor(Math.random() * 5000) + 100,
-            teamCount: Math.floor(Math.random() * 5),
-            activityCount: Math.floor(Math.random() * 20),
-            checkinDays: Math.floor(Math.random() * 365),
-            carbonReduction: (Math.random() * 100).toFixed(2),
-            registerTime: '2024-01-15 09:30:00',
-            lastLoginTime: '2024-01-21 14:20:00',
-          };
-        });
-        
-        setTableData(mockData);
-        setPagination(prev => ({ ...prev, total: 1256 }));
-        setLoading(false);
-      }, 800);
+      // 立即设置模拟数据，不使用setTimeout
+      const statuses = ['active', 'banned', 'pending'];
+      const mockData = Array.from({ length: 5 }, (_, index) => ({
+        id: index + 1,
+        username: `user${index + 1}`,
+        nickname: `绿邻居${index + 1}`,
+        status: statuses[index % statuses.length],
+        phone: `138****000${index + 1}`,
+        email: `user${index + 1}@example.com`,
+        points: 100 + index * 50,
+        registerTime: '2024-01-15 09:30:00',
+      }));
+      
+      setTableData(mockData);
+      setPagination(prev => ({ ...prev, total: 5 }));
+      setLoading(false);
     } catch (error) {
       console.error('获取用户列表失败:', error);
-      alert('获取用户列表失败');
       setLoading(false);
     }
   };
@@ -243,58 +219,45 @@ const UserList = () => {
     navigate(`/user/detail/${record.id}`);
   };
 
-  const handleToggleStatus = (record, newStatus) => {
-    const actionText = {
-      active: '启用',
-      banned: '禁用',
-    }[newStatus];
-    
+  const handleEdit = (record) => {
+    navigate(`/user/edit/${record.id}`);
+  };
+
+  const handleDelete = (record) => {
     setConfirmDialog({
       visible: true,
-      title: `确认${actionText}`,
-      content: `确定要${actionText}用户「${record.nickname}」吗？`,
-      onConfirm: () => performToggleStatus(record.id, newStatus),
-      loading: false,
+      title: '确认删除',
+      content: `确定要删除用户 "${record.nickname || record.name}" 吗？`,
+      onConfirm: () => confirmDelete(record.id),
     });
   };
 
-  const performToggleStatus = async (userId, newStatus) => {
+  const confirmDelete = async (id) => {
+    setConfirmDialog(prev => ({ ...prev, loading: true }));
     try {
-      setConfirmDialog(prev => ({ ...prev, loading: true }));
-      
-      // TODO: 替换为实际的API调用
-      // await axios.patch(`/api/users/${userId}/status`, { status: newStatus });
-      
-      // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const actionText = {
-        active: '启用',
-        banned: '禁用',
-      }[newStatus];
-      
-      alert(`${actionText}成功`);
+      setTableData(prev => prev.filter(item => item.id !== id));
       setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null, loading: false });
-      fetchUserList(); // 刷新列表
     } catch (error) {
-      console.error('状态更新失败:', error);
-      alert('状态更新失败');
+      console.error('删除失败:', error);
       setConfirmDialog(prev => ({ ...prev, loading: false }));
     }
   };
 
+
+
   const getStatusTag = (status) => {
     const statusMap = {
-      active: { color: 'success', text: '正常' },
-      banned: { color: 'danger', text: '禁用' },
-      pending: { color: 'warning', text: '待审核' },
+      active: { text: '正常', color: '#52c41a' },
+      banned: { text: '禁用', color: '#ff4d4f' },
+      pending: { text: '待审核', color: '#faad14' },
     };
-    const config = statusMap[status] || { color: 'default', text: '未知' };
-    return <Tag theme={config.color}>{config.text}</Tag>;
-  };
-
-  const getGenderText = (gender) => {
-    return gender === 'male' ? '男' : gender === 'female' ? '女' : '未知';
+    const statusInfo = statusMap[status] || { text: status, color: '#666' };
+    return (
+      <span style={{ color: statusInfo.color, fontWeight: 'bold' }}>
+        {statusInfo.text}
+      </span>
+    );
   };
 
   const columns = [
@@ -304,69 +267,35 @@ const UserList = () => {
       width: 80,
     },
     {
-      colKey: 'userInfo',
-      title: '用户信息',
-      width: 200,
-      cell: ({ row }) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Avatar src={row.avatar} size="small" />
-          <div>
-            <div style={{ fontWeight: 'bold' }}>{row.nickname}</div>
-            <div style={{ fontSize: '12px', color: '#666' }}>@{row.username}</div>
-          </div>
-        </div>
-      ),
+      colKey: 'nickname',
+      title: '用户昵称',
+      width: 150,
     },
     {
-      colKey: 'contact',
-      title: '联系方式',
+      colKey: 'username',
+      title: '用户名',
+      width: 120,
+    },
+    {
+      colKey: 'phone',
+      title: '手机号',
+      width: 130,
+    },
+    {
+      colKey: 'email',
+      title: '邮箱',
       width: 180,
-      cell: ({ row }) => (
-        <div style={{ fontSize: '12px' }}>
-          <div>{row.phone}</div>
-          <div style={{ color: '#666' }}>{row.email}</div>
-        </div>
-      ),
-    },
-    {
-      colKey: 'profile',
-      title: '个人信息',
-      width: 100,
-      cell: ({ row }) => (
-        <div style={{ fontSize: '12px' }}>
-          <div>{getGenderText(row.gender)}</div>
-          <div>{row.age}岁</div>
-        </div>
-      ),
     },
     {
       colKey: 'status',
       title: '状态',
       width: 80,
-      cell: ({ row }) => getStatusTag(row.status),
+      render: (value) => getStatusTag(value),
     },
     {
-      colKey: 'stats',
-      title: '活动数据',
-      width: 120,
-      cell: ({ row }) => (
-        <div style={{ fontSize: '12px' }}>
-          <div>积分: {row.points}</div>
-          <div>队伍: {row.teamCount}</div>
-          <div>活动: {row.activityCount}</div>
-        </div>
-      ),
-    },
-    {
-      colKey: 'environmental',
-      title: '环保数据',
-      width: 120,
-      cell: ({ row }) => (
-        <div style={{ fontSize: '12px' }}>
-          <div>打卡: {row.checkinDays}天</div>
-          <div>减碳: {row.carbonReduction}kg</div>
-        </div>
-      ),
+      colKey: 'points',
+      title: '积分',
+      width: 80,
     },
     {
       colKey: 'registerTime',
@@ -374,101 +303,166 @@ const UserList = () => {
       width: 160,
     },
     {
-      colKey: 'lastLoginTime',
-      title: '最后登录',
-      width: 160,
-    },
-    {
       colKey: 'operation',
       title: '操作',
-      width: 180,
-      cell: ({ row }) => (
-        <Space>
-          <Button
-            variant="text"
-            size="small"
-            icon={<ViewIcon />}
-            onClick={() => handleViewDetail(row)}
+      width: 150,
+      render: (_, record) => (
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button
+            onClick={() => handleViewDetail(record)}
+            style={{
+              padding: '4px 8px',
+              border: '1px solid #1890ff',
+              backgroundColor: 'transparent',
+              color: '#1890ff',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px',
+            }}
           >
-            详情
-          </Button>
-          {row.status === 'active' && (
-            <Button
-              variant="text"
-              size="small"
-              theme="danger"
-              icon={<BanIcon />}
-              onClick={() => handleToggleStatus(row, 'banned')}
-            >
-              禁用
-            </Button>
-          )}
-          {row.status === 'banned' && (
-            <Button
-              variant="text"
-              size="small"
-              theme="success"
-              icon={<CheckCircleIcon />}
-              onClick={() => handleToggleStatus(row, 'active')}
-            >
-              启用
-            </Button>
-          )}
-        </Space>
+            查看
+          </button>
+          <button
+            onClick={() => handleEdit(record)}
+            style={{
+              padding: '4px 8px',
+              border: '1px solid #52c41a',
+              backgroundColor: 'transparent',
+              color: '#52c41a',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px',
+            }}
+          >
+            编辑
+          </button>
+          <button
+            onClick={() => handleDelete(record)}
+            style={{
+              padding: '4px 8px',
+              border: '1px solid #ff4d4f',
+              backgroundColor: 'transparent',
+              color: '#ff4d4f',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px',
+            }}
+          >
+            删除
+          </button>
+        </div>
       ),
     },
   ];
 
   return (
-    <div>
-      <Card>
-        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Space wrap>
-            <Input
-              placeholder="搜索用户名或昵称"
+    <div style={{ padding: '24px' }}>
+      {/* 搜索表单 */}
+      <div style={{
+        backgroundColor: '#fff',
+        padding: '24px',
+        borderRadius: '8px',
+        marginBottom: '16px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '16px',
+          alignItems: 'end'
+        }}>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>搜索关键词</label>
+            <input
+              type="text"
+              placeholder="请输入用户名、昵称或邮箱"
               value={searchValue}
-              onChange={setSearchValue}
-              style={{ width: '250px' }}
+              onChange={(e) => setSearchValue(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #d9d9d9',
+                borderRadius: '4px',
+                fontSize: '14px'
+              }}
             />
-            <Select
-              placeholder="选择状态"
+          </div>
+          <div>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>用户状态</label>
+            <select
               value={statusFilter}
-              onChange={setStatusFilter}
-              options={statusOptions}
-              style={{ width: '120px' }}
-            />
-            <Button
-              theme="primary"
-              icon={<SearchIcon />}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '8px 12px',
+                border: '1px solid #d9d9d9',
+                borderRadius: '4px',
+                fontSize: '14px'
+              }}
+            >
+              {statusOptions.map(option => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button
               onClick={handleSearch}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#1890ff',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
             >
               搜索
-            </Button>
-            <Button
-              variant="outline"
+            </button>
+            <button
               onClick={handleReset}
+              style={{
+                padding: '8px 16px',
+                backgroundColor: '#f5f5f5',
+                color: '#666',
+                border: '1px solid #d9d9d9',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '14px'
+              }}
             >
               重置
-            </Button>
-          </Space>
+            </button>
+          </div>
         </div>
-        
+      </div>
+
+      {/* 表格 */}
+      <div style={{
+        backgroundColor: '#fff',
+        borderRadius: '8px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}>
         <PageTable
           data={tableData}
           columns={columns}
           loading={loading}
           pagination={pagination}
-          onPaginationChange={handlePageChange}
+          onPageChange={handlePageChange}
         />
-      </Card>
+      </div>
 
+      {/* 确认对话框 */}
       <ConfirmDialog
         visible={confirmDialog.visible}
         title={confirmDialog.title}
         content={confirmDialog.content}
+        loading={confirmDialog.loading}
         onConfirm={confirmDialog.onConfirm}
         onCancel={() => setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null, loading: false })}
-        loading={confirmDialog.loading}
       />
     </div>
   );
