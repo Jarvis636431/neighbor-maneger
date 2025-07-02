@@ -1,57 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// 模拟组件
-const Card = ({ children }) => (
-  <div style={{
-    backgroundColor: '#fff',
-    borderRadius: '8px',
-    padding: '32px',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-    width: '100%',
-    maxWidth: '400px'
-  }}>{children}</div>
-);
-
-const Input = ({ type = 'text', placeholder, value, onChange, style }) => (
-  <input
-    type={type}
-    placeholder={placeholder}
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    style={{
-      width: '100%',
-      padding: '12px 16px',
-      border: '1px solid #d9d9d9',
-      borderRadius: '6px',
-      fontSize: '14px',
-      boxSizing: 'border-box',
-      ...style
-    }}
-  />
-);
-
-const Button = ({ children, type = 'button', onClick, loading, style }) => (
-  <button
-    type={type}
-    onClick={onClick}
-    disabled={loading}
-    style={{
-      width: '100%',
-      padding: '12px 16px',
-      backgroundColor: loading ? '#91d5ff' : '#1890ff',
-      color: '#fff',
-      border: 'none',
-      borderRadius: '6px',
-      fontSize: '16px',
-      cursor: loading ? 'not-allowed' : 'pointer',
-      transition: 'background-color 0.3s',
-      ...style
-    }}
-  >
-    {loading ? '登录中...' : children}
-  </button>
-);
+import { Card, Button, Input } from '../components/ui';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -119,7 +68,12 @@ const Login = () => {
       backgroundColor: '#f5f5f5',
       padding: '20px'
     }}>
-      <Card>
+      <Card style={{
+        padding: '32px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        width: '100%',
+        maxWidth: '400px'
+      }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <h1 style={{ 
             margin: '0 0 8px 0', 
@@ -145,6 +99,7 @@ const Login = () => {
               placeholder="用户名"
               value={formData.username}
               onChange={(value) => handleInputChange('username', value)}
+              size="large"
             />
           </div>
           
@@ -154,6 +109,7 @@ const Login = () => {
               placeholder="密码"
               value={formData.password}
               onChange={(value) => handleInputChange('password', value)}
+              size="large"
             />
           </div>
 
@@ -171,7 +127,12 @@ const Login = () => {
             </div>
           )}
 
-          <Button type="submit" loading={loading}>
+          <Button 
+            type="submit" 
+            theme="primary"
+            loading={loading}
+            style={{ width: '100%', padding: '12px 16px', fontSize: '16px' }}
+          >
             登录
           </Button>
         </form>

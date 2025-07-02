@@ -1,96 +1,7 @@
 import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PageTable from '../components/PageTable';
-// import axios from 'axios';
-
-// 模拟组件
-const Card = ({ children }) => (
-  <div style={{
-    backgroundColor: '#fff',
-    borderRadius: '8px',
-    padding: '24px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    border: '1px solid #e8e8e8'
-  }}>{children}</div>
-);
-
-const Tag = ({ theme, children }) => (
-  <span style={{
-    padding: '2px 8px',
-    borderRadius: '4px',
-    fontSize: '12px',
-    backgroundColor: theme === 'success' ? '#e6f7ff' : theme === 'error' ? '#fff2f0' : '#f5f5f5',
-    color: theme === 'success' ? '#1890ff' : theme === 'error' ? '#ff4d4f' : '#666',
-    border: `1px solid ${theme === 'success' ? '#91d5ff' : theme === 'error' ? '#ffccc7' : '#d9d9d9'}`
-  }}>{children}</span>
-);
-
-const Button = ({ children, theme, variant, size, icon, onClick, style }) => (
-  <button
-    onClick={onClick}
-    style={{
-      padding: size === 'small' ? '4px 8px' : '8px 16px',
-      backgroundColor: theme === 'primary' ? '#1890ff' : variant === 'outline' ? '#fff' : 'transparent',
-      color: theme === 'primary' ? '#fff' : variant === 'outline' ? '#1890ff' : '#1890ff',
-      border: variant === 'outline' ? '1px solid #1890ff' : theme === 'primary' ? 'none' : 'none',
-      borderRadius: '6px',
-      cursor: 'pointer',
-      fontSize: size === 'small' ? '12px' : '14px',
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '4px',
-      ...style
-    }}
-  >
-    {icon}{children}
-  </button>
-);
-
-const Space = ({ children, wrap }) => (
-  <div style={{
-    display: 'flex',
-    gap: '8px',
-    alignItems: 'center',
-    flexWrap: wrap ? 'wrap' : 'nowrap'
-  }}>{children}</div>
-);
-
-const Input = ({ placeholder, value, onChange, style }) => (
-  <input
-    type="text"
-    placeholder={placeholder}
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    style={{
-      padding: '8px 12px',
-      border: '1px solid #d9d9d9',
-      borderRadius: '6px',
-      fontSize: '14px',
-      ...style
-    }}
-  />
-);
-
-const Select = ({ placeholder, value, onChange, options, style }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    style={{
-      padding: '8px 12px',
-      border: '1px solid #d9d9d9',
-      borderRadius: '6px',
-      fontSize: '14px',
-      backgroundColor: '#fff',
-      ...style
-    }}
-  >
-    <option value="">{placeholder}</option>
-    {options?.map(option => (
-      <option key={option.value} value={option.value}>{option.label}</option>
-    ))}
-  </select>
-);
+import { Card, Button, Input, Tag, Select, Space } from '../components/ui';
 
 const DatePicker = ({ placeholder, value, onChange, style }) => (
   <div style={{ display: 'flex', gap: '8px', ...style }}>
@@ -228,7 +139,7 @@ const ActivityList = () => {
     const statusMap = {
       ongoing: { color: 'success', text: '进行中' },
       finished: { color: 'default', text: '已结束' },
-      cancelled: { color: 'error', text: '已取消' },
+      cancelled: { color: 'danger', text: '已取消' },
     };
     const config = statusMap[status] || { color: 'default', text: '未知' };
     return <Tag theme={config.color}>{config.text}</Tag>;

@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PageTable from '../components/PageTable';
 import ConfirmDialog from '../components/ConfirmDialog';
-// import axios from 'axios';
-
-// 模拟组件，实际项目中应该从UI库导入
-const Tag = ({ theme, children }) => (
-  <span style={{
-    padding: '2px 8px',
-    borderRadius: '4px',
-    fontSize: '12px',
-    backgroundColor: theme === 'success' ? '#e6f7ff' : theme === 'warning' ? '#fff7e6' : '#f5f5f5',
-    color: theme === 'success' ? '#1890ff' : theme === 'warning' ? '#fa8c16' : '#666',
-    border: `1px solid ${theme === 'success' ? '#91d5ff' : theme === 'warning' ? '#ffd591' : '#d9d9d9'}`
-  }}>{children}</span>
-);
+import { Card, Button, Input, Tag, Select, Space } from '../components/ui';
 
 const Image = ({ src, width, height, style, fallback }) => (
   <img 
@@ -26,77 +13,6 @@ const Image = ({ src, width, height, style, fallback }) => (
     onError={(e) => { e.target.src = fallback; }}
     alt=""
   />
-);
-
-const Card = ({ children }) => (
-  <div style={{
-    backgroundColor: '#fff',
-    borderRadius: '8px',
-    padding: '16px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-  }}>{children}</div>
-);
-
-const Space = ({ children, wrap }) => (
-  <div style={{
-    display: 'flex',
-    gap: '8px',
-    flexWrap: wrap ? 'wrap' : 'nowrap',
-    alignItems: 'center'
-  }}>{children}</div>
-);
-
-const Button = ({ children, theme, variant, size, icon, onClick }) => (
-  <button
-    onClick={onClick}
-    style={{
-      padding: size === 'small' ? '4px 8px' : '8px 16px',
-      borderRadius: '4px',
-      border: variant === 'outline' ? '1px solid #d9d9d9' : theme === 'primary' ? 'none' : '1px solid #d9d9d9',
-      backgroundColor: theme === 'primary' ? '#1890ff' : variant === 'text' ? 'transparent' : '#fff',
-      color: theme === 'primary' ? '#fff' : theme === 'danger' ? '#ff4d4f' : theme === 'success' ? '#52c41a' : theme === 'warning' ? '#fa8c16' : '#666',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4px'
-    }}
-  >
-    {icon}
-    {children}
-  </button>
-);
-
-const Input = ({ placeholder, value, onChange, style }) => (
-  <input
-    type="text"
-    placeholder={placeholder}
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    style={{
-      padding: '8px 12px',
-      border: '1px solid #d9d9d9',
-      borderRadius: '4px',
-      ...style
-    }}
-  />
-);
-
-const Select = ({ placeholder, value, onChange, options, style }) => (
-  <select
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    style={{
-      padding: '8px 12px',
-      border: '1px solid #d9d9d9',
-      borderRadius: '4px',
-      ...style
-    }}
-  >
-    <option value="">{placeholder}</option>
-    {options.map(option => (
-      <option key={option.value} value={option.value}>{option.label}</option>
-    ))}
-  </select>
 );
 
 // 模拟图标组件

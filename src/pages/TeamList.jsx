@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import axios from 'axios';
+import { Card, Button, Input, Tag, Space } from '../components/ui';
+import PageTable from '../components/PageTable';
 
 const TeamList = () => {
   const navigate = useNavigate();
@@ -52,151 +53,107 @@ const TeamList = () => {
     navigate(`/team/detail/${record.id}`);
   };
 
-  const getStatusBadge = (status) => {
+  const getStatusTag = (status) => {
     const statusMap = {
-      approved: { color: '#52c41a', text: '已通过' },
-      pending: { color: '#faad14', text: '待审核' },
-      rejected: { color: '#ff4d4f', text: '已拒绝' },
+      approved: { color: 'success', text: '已通过' },
+      pending: { color: 'warning', text: '待审核' },
+      rejected: { color: 'danger', text: '已拒绝' },
     };
-    const config = statusMap[status] || { color: '#d9d9d9', text: '未知' };
-    return (
-      <span style={{
-        padding: '2px 8px',
-        borderRadius: '4px',
-        backgroundColor: config.color,
-        color: 'white',
-        fontSize: '12px'
-      }}>
-        {config.text}
-      </span>
-    );
+    const config = statusMap[status] || { color: 'default', text: '未知' };
+    return <Tag theme={config.color}>{config.text}</Tag>;
   };
 
-  const cardStyle = {
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '24px',
-    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-    margin: '16px'
+  const handlePageChange = (pageInfo) => {
+    setPagination(prev => ({
+      ...prev,
+      current: pageInfo.current,
+      pageSize: pageInfo.pageSize,
+    }));
   };
 
-  const searchContainerStyle = {
-    display: 'flex',
-    gap: '12px',
-    marginBottom: '24px',
-    alignItems: 'center'
-  };
-
-  const inputStyle = {
-    padding: '8px 12px',
-    border: '1px solid #d9d9d9',
-    borderRadius: '4px',
-    width: '300px',
-    fontSize: '14px'
-  };
-
-  const buttonStyle = {
-    padding: '8px 16px',
-    backgroundColor: '#1890ff',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px'
-  };
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse',
-    border: '1px solid #f0f0f0'
-  };
-
-  const thStyle = {
-    backgroundColor: '#fafafa',
-    padding: '12px',
-    textAlign: 'left',
-    borderBottom: '1px solid #f0f0f0',
-    fontWeight: '500'
-  };
-
-  const tdStyle = {
-    padding: '12px',
-    borderBottom: '1px solid #f0f0f0'
-  };
-
-  const viewButtonStyle = {
-    padding: '4px 8px',
-    backgroundColor: 'transparent',
-    color: '#1890ff',
-    border: '1px solid #1890ff',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px'
-  };
+  const columns = [
+    {
+      colKey: 'id',
+      title: 'ID',
+      width: 80,
+    },
+    {
+      colKey: 'name',
+      title: '队伍名称',
+      width: 200,
+    },
+    {
+      colKey: 'leader',
+      title: '队长',
+      width: 120,
+    },
+    {
+      colKey: 'memberCount',
+      title: '成员数量',
+      width: 100,
+      cell: ({ row }) => `${row.memberCount}人`,
+    },
+    {
+      colKey: 'status',
+      title: '状态',
+      width: 100,
+      cell: ({ row }) => getStatusTag(row.status),
+    },
+    {
+      colKey: 'createTime',
+      title: '创建时间',
+      width: 160,
+    },
+    {
+      colKey: 'description',
+      title: '描述',
+      width: 200,
+      ellipsis: true,
+    },
+    {
+      colKey: 'operation',
+      title: '操作',
+      width: 120,
+      cell: ({ row }) => (
+        <Button
+          variant="outline"
+          size="small"
+          onClick={() => handleViewDetail(row)}
+        >
+          👁️ 查看
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div>
-      <div style={cardStyle}>
-        <div style={searchContainerStyle}>
-          <input
-            type="text"
-            placeholder="搜索队伍名称或队长"
-            value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
-            style={inputStyle}
-          />
-          <button
-            onClick={handleSearch}
-            style={buttonStyle}
-          >
-            🔍 搜索
-          </button>
+      <Card>
+        <div style={{ marginBottom: '16px' }}>
+          <Space>
+            <Input
+              placeholder="搜索队伍名称或队长"
+              value={searchValue}
+              onChange={setSearchValue}
+              style={{ width: '300px' }}
+            />
+            <Button
+              theme="primary"
+              onClick={handleSearch}
+            >
+              🔍 搜索
+            </Button>
+          </Space>
         </div>
         
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px' }}>加载中...</div>
-        ) : (
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>ID</th>
-                <th style={thStyle}>队伍名称</th>
-                <th style={thStyle}>队长</th>
-                <th style={thStyle}>成员数量</th>
-                <th style={thStyle}>状态</th>
-                <th style={thStyle}>创建时间</th>
-                <th style={thStyle}>描述</th>
-                <th style={thStyle}>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((row) => (
-                <tr key={row.id}>
-                  <td style={tdStyle}>{row.id}</td>
-                  <td style={tdStyle}>{row.name}</td>
-                  <td style={tdStyle}>{row.leader}</td>
-                  <td style={tdStyle}>{row.memberCount}人</td>
-                  <td style={tdStyle}>{getStatusBadge(row.status)}</td>
-                  <td style={tdStyle}>{row.createTime}</td>
-                  <td style={tdStyle}>{row.description}</td>
-                  <td style={tdStyle}>
-                    <button
-                      onClick={() => handleViewDetail(row)}
-                      style={viewButtonStyle}
-                    >
-                      👁️ 查看
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-        
-        <div style={{ marginTop: '16px', textAlign: 'center' }}>
-          <span>共 {pagination.total} 条记录</span>
-        </div>
-      </div>
+        <PageTable
+          data={tableData}
+          columns={columns}
+          loading={loading}
+          pagination={pagination}
+          onPaginationChange={handlePageChange}
+        />
+      </Card>
     </div>
   );
 };
