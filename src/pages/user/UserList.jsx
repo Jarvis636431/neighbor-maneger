@@ -5,6 +5,134 @@ import PageTable from '../../components/PageTable';
 import ConfirmDialog from '../../components/ConfirmDialog';
 // import axios from 'axios';
 
+// 模拟 UI 组件
+const Card = ({ children, ...props }) => (
+  <div style={{ background: '#fff', padding: '16px', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }} {...props}>
+    {children}
+  </div>
+);
+
+const Tag = ({ theme, children, ...props }) => {
+  const colors = {
+    success: { bg: '#f6ffed', color: '#52c41a', border: '#b7eb8f' },
+    danger: { bg: '#fff2f0', color: '#ff4d4f', border: '#ffccc7' },
+    warning: { bg: '#fffbe6', color: '#faad14', border: '#ffe58f' },
+    default: { bg: '#fafafa', color: '#666', border: '#d9d9d9' }
+  };
+  const style = colors[theme] || colors.default;
+  return (
+    <span style={{
+      padding: '2px 8px',
+      borderRadius: '4px',
+      fontSize: '12px',
+      backgroundColor: style.bg,
+      color: style.color,
+      border: `1px solid ${style.border}`
+    }} {...props}>
+      {children}
+    </span>
+  );
+};
+
+const Avatar = ({ src, size, ...props }) => (
+  <img 
+    src={src} 
+    alt="avatar" 
+    style={{ 
+      width: size === 'small' ? '32px' : '40px', 
+      height: size === 'small' ? '32px' : '40px', 
+      borderRadius: '50%',
+      objectFit: 'cover'
+    }} 
+    {...props} 
+  />
+);
+
+const Button = ({ children, variant, size, theme, icon, onClick, ...props }) => {
+  const baseStyle = {
+    padding: size === 'small' ? '4px 8px' : '8px 16px',
+    borderRadius: '4px',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    fontSize: size === 'small' ? '12px' : '14px'
+  };
+  
+  let themeStyle = {};
+  if (theme === 'primary') {
+    themeStyle = { backgroundColor: '#1890ff', color: '#fff' };
+  } else if (theme === 'danger') {
+    themeStyle = { backgroundColor: variant === 'text' ? 'transparent' : '#ff4d4f', color: variant === 'text' ? '#ff4d4f' : '#fff' };
+  } else if (theme === 'success') {
+    themeStyle = { backgroundColor: variant === 'text' ? 'transparent' : '#52c41a', color: variant === 'text' ? '#52c41a' : '#fff' };
+  } else if (variant === 'outline') {
+    themeStyle = { backgroundColor: 'transparent', color: '#666', border: '1px solid #d9d9d9' };
+  } else if (variant === 'text') {
+    themeStyle = { backgroundColor: 'transparent', color: '#1890ff' };
+  } else {
+    themeStyle = { backgroundColor: '#f5f5f5', color: '#333' };
+  }
+  
+  return (
+    <button style={{ ...baseStyle, ...themeStyle }} onClick={onClick} {...props}>
+      {icon}
+      {children}
+    </button>
+  );
+};
+
+const Space = ({ children, wrap, ...props }) => (
+  <div style={{ display: 'flex', gap: '8px', flexWrap: wrap ? 'wrap' : 'nowrap' }} {...props}>
+    {children}
+  </div>
+);
+
+const Input = ({ placeholder, value, onChange, style, ...props }) => (
+  <input
+    type="text"
+    placeholder={placeholder}
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    style={{
+      padding: '8px 12px',
+      border: '1px solid #d9d9d9',
+      borderRadius: '4px',
+      fontSize: '14px',
+      ...style
+    }}
+    {...props}
+  />
+);
+
+const Select = ({ placeholder, value, onChange, options, style, ...props }) => (
+  <select
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    style={{
+      padding: '8px 12px',
+      border: '1px solid #d9d9d9',
+      borderRadius: '4px',
+      fontSize: '14px',
+      backgroundColor: '#fff',
+      ...style
+    }}
+    {...props}
+  >
+    {placeholder && <option value="">{placeholder}</option>}
+    {options?.map(option => (
+      <option key={option.value} value={option.value}>{option.label}</option>
+    ))}
+  </select>
+);
+
+// 模拟图标组件
+const SearchIcon = () => <span>🔍</span>;
+const ViewIcon = () => <span>👁️</span>;
+const BanIcon = () => <span>🚫</span>;
+const CheckCircleIcon = () => <span>✅</span>;
+
 const UserList = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -301,7 +429,6 @@ const UserList = () => {
               value={searchValue}
               onChange={setSearchValue}
               style={{ width: '250px' }}
-              clearable
             />
             <Select
               placeholder="选择状态"
@@ -309,7 +436,6 @@ const UserList = () => {
               onChange={setStatusFilter}
               options={statusOptions}
               style={{ width: '120px' }}
-              clearable
             />
             <Button
               theme="primary"
@@ -332,7 +458,7 @@ const UserList = () => {
           columns={columns}
           loading={loading}
           pagination={pagination}
-          onPageChange={handlePageChange}
+          onPaginationChange={handlePageChange}
         />
       </Card>
 

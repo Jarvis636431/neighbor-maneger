@@ -8,6 +8,9 @@ import LoginRedirect from '../components/LoginRedirect';
 // 页面组件导入
 import Dashboard from '../pages/dashboard/Dashboard';
 import TeamList from '../pages/team/TeamList';
+import ActivityList from '../pages/activity/ActivityList';
+import UserList from '../pages/user/UserList';
+import NewsList from '../pages/news/NewsList';
 import Login from '../pages/auth/Login';
 
 const router = createBrowserRouter([
@@ -49,7 +52,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <PlaceholderPage title="活动列表" />,
+            element: <ActivityList />,
           },
           {
             path: 'detail/:id',
@@ -62,7 +65,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <PlaceholderPage title="用户列表" />,
+            element: <UserList />,
           },
           {
             path: 'detail/:id',
@@ -75,7 +78,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: 'list',
-            element: <PlaceholderPage title="咨询列表" />,
+            element: <NewsList />,
           },
           {
             path: 'detail/:id',

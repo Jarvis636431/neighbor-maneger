@@ -4,6 +4,126 @@ import { useNavigate } from 'react-router-dom';
 import PageTable from '../../components/PageTable';
 // import axios from 'axios';
 
+// 模拟组件
+const Card = ({ children }) => (
+  <div style={{
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    padding: '24px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+    border: '1px solid #e8e8e8'
+  }}>{children}</div>
+);
+
+const Tag = ({ theme, children }) => (
+  <span style={{
+    padding: '2px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    backgroundColor: theme === 'success' ? '#e6f7ff' : theme === 'error' ? '#fff2f0' : '#f5f5f5',
+    color: theme === 'success' ? '#1890ff' : theme === 'error' ? '#ff4d4f' : '#666',
+    border: `1px solid ${theme === 'success' ? '#91d5ff' : theme === 'error' ? '#ffccc7' : '#d9d9d9'}`
+  }}>{children}</span>
+);
+
+const Button = ({ children, theme, variant, size, icon, onClick, style }) => (
+  <button
+    onClick={onClick}
+    style={{
+      padding: size === 'small' ? '4px 8px' : '8px 16px',
+      backgroundColor: theme === 'primary' ? '#1890ff' : variant === 'outline' ? '#fff' : 'transparent',
+      color: theme === 'primary' ? '#fff' : variant === 'outline' ? '#1890ff' : '#1890ff',
+      border: variant === 'outline' ? '1px solid #1890ff' : theme === 'primary' ? 'none' : 'none',
+      borderRadius: '6px',
+      cursor: 'pointer',
+      fontSize: size === 'small' ? '12px' : '14px',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px',
+      ...style
+    }}
+  >
+    {icon}{children}
+  </button>
+);
+
+const Space = ({ children, wrap }) => (
+  <div style={{
+    display: 'flex',
+    gap: '8px',
+    alignItems: 'center',
+    flexWrap: wrap ? 'wrap' : 'nowrap'
+  }}>{children}</div>
+);
+
+const Input = ({ placeholder, value, onChange, style }) => (
+  <input
+    type="text"
+    placeholder={placeholder}
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    style={{
+      padding: '8px 12px',
+      border: '1px solid #d9d9d9',
+      borderRadius: '6px',
+      fontSize: '14px',
+      ...style
+    }}
+  />
+);
+
+const Select = ({ placeholder, value, onChange, options, style }) => (
+  <select
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    style={{
+      padding: '8px 12px',
+      border: '1px solid #d9d9d9',
+      borderRadius: '6px',
+      fontSize: '14px',
+      backgroundColor: '#fff',
+      ...style
+    }}
+  >
+    <option value="">{placeholder}</option>
+    {options?.map(option => (
+      <option key={option.value} value={option.value}>{option.label}</option>
+    ))}
+  </select>
+);
+
+const DatePicker = ({ placeholder, value, onChange, style }) => (
+  <div style={{ display: 'flex', gap: '8px', ...style }}>
+    <input
+      type="date"
+      placeholder={placeholder?.[0] || '开始日期'}
+      value={value?.[0] || ''}
+      onChange={(e) => onChange([e.target.value, value?.[1] || ''])}
+      style={{
+        padding: '8px 12px',
+        border: '1px solid #d9d9d9',
+        borderRadius: '6px',
+        fontSize: '14px'
+      }}
+    />
+    <input
+      type="date"
+      placeholder={placeholder?.[1] || '结束日期'}
+      value={value?.[1] || ''}
+      onChange={(e) => onChange([value?.[0] || '', e.target.value])}
+      style={{
+        padding: '8px 12px',
+        border: '1px solid #d9d9d9',
+        borderRadius: '6px',
+        fontSize: '14px'
+      }}
+    />
+  </div>
+);
+
+const SearchIcon = () => <span>🔍</span>;
+const ViewIcon = () => <span>👁️</span>;
+
 const ActivityList = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -226,7 +346,7 @@ const ActivityList = () => {
           columns={columns}
           loading={loading}
           pagination={pagination}
-          onPageChange={handlePageChange}
+          onPaginationChange={handlePageChange}
         />
       </Card>
     </div>
