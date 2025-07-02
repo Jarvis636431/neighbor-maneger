@@ -121,16 +121,12 @@ const UserList = () => {
 
   const getStatusTag = (status) => {
     const statusMap = {
-      active: { text: '正常', color: '#52c41a' },
-      banned: { text: '禁用', color: '#ff4d4f' },
-      pending: { text: '待审核', color: '#faad14' },
+      active: { color: 'success', text: '正常' },
+      banned: { color: 'danger', text: '禁用' },
+      pending: { color: 'warning', text: '待审核' },
     };
-    const statusInfo = statusMap[status] || { text: status, color: '#666' };
-    return (
-      <span style={{ color: statusInfo.color, fontWeight: 'bold' }}>
-        {statusInfo.text}
-      </span>
-    );
+    const config = statusMap[status] || { color: 'default', text: '未知' };
+    return <Tag theme={config.color}>{config.text}</Tag>;
   };
 
   const columns = [
@@ -180,145 +176,70 @@ const UserList = () => {
       title: '操作',
       width: 150,
       render: (_, record) => (
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button
+        <Space>
+          <Button
+            variant="text"
+            size="small"
             onClick={() => handleViewDetail(record)}
-            style={{
-              padding: '4px 8px',
-              border: '1px solid #1890ff',
-              backgroundColor: 'transparent',
-              color: '#1890ff',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '12px',
-            }}
           >
-            查看
-          </button>
-          <button
+            👁️ 查看
+          </Button>
+          <Button
+            variant="text"
+            size="small"
+            theme="success"
             onClick={() => handleEdit(record)}
-            style={{
-              padding: '4px 8px',
-              border: '1px solid #52c41a',
-              backgroundColor: 'transparent',
-              color: '#52c41a',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '12px',
-            }}
           >
-            编辑
-          </button>
-          <button
+            ✏️ 编辑
+          </Button>
+          <Button
+            variant="text"
+            size="small"
+            theme="danger"
             onClick={() => handleDelete(record)}
-            style={{
-              padding: '4px 8px',
-              border: '1px solid #ff4d4f',
-              backgroundColor: 'transparent',
-              color: '#ff4d4f',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '12px',
-            }}
           >
-            删除
-          </button>
-        </div>
+            🗑️ 删除
+          </Button>
+        </Space>
       ),
     },
   ];
 
   return (
     <div style={{ padding: '20px' }}>
-      {/* 搜索表单 */}
-      <div style={{
-        backgroundColor: '#fff',
-        padding: '24px',
-        borderRadius: '8px',
-        marginBottom: '16px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '16px',
-          alignItems: 'end'
-        }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>搜索关键词</label>
-            <input
-              type="text"
+      <Card>
+        <div style={{ marginBottom: '16px' }}>
+          <Space wrap>
+            <Input
               placeholder="请输入用户名、昵称或邮箱"
               value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                border: '1px solid #d9d9d9',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
+              onChange={setSearchValue}
+              style={{ width: '250px' }}
+              clearable
             />
-          </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>用户状态</label>
-            <select
+            <Select
+              placeholder="选择状态"
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '8px 12px',
-                border: '1px solid #d9d9d9',
-                borderRadius: '4px',
-                fontSize: '14px'
-              }}
-            >
-              {statusOptions.map(option => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button
+              onChange={setStatusFilter}
+              options={statusOptions}
+              style={{ width: '120px' }}
+              clearable
+            />
+            <Button
+              theme="primary"
               onClick={handleSearch}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#1890ff',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
             >
-              搜索
-            </button>
-            <button
+              🔍 搜索
+            </Button>
+            <Button
+              variant="outline"
               onClick={handleReset}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#f5f5f5',
-                color: '#666',
-                border: '1px solid #d9d9d9',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
             >
               重置
-            </button>
-          </div>
+            </Button>
+          </Space>
         </div>
-      </div>
-
-      {/* 表格 */}
-      <div style={{
-        backgroundColor: '#fff',
-        borderRadius: '8px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
+        
         <PageTable
           data={tableData}
           columns={columns}
@@ -326,7 +247,7 @@ const UserList = () => {
           pagination={pagination}
           onPageChange={handlePageChange}
         />
-      </div>
+      </Card>
 
       {/* 确认对话框 */}
       <ConfirmDialog
