@@ -3,7 +3,7 @@ import React from 'react';
 const Dashboard = () => {
   return (
     <div style={{ padding: '20px' }}>
-      <h1>简化版Dashboard - 不使用TDesign</h1>
+      <h1>系统概览</h1>
       <div style={{ 
         display: 'grid', 
         gridTemplateColumns: 'repeat(4, 1fr)', 

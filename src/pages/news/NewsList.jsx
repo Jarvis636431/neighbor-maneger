@@ -1,10 +1,109 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Button, Space, Tag, Select, Image, MessagePlugin } from 'tdesign-react';
-import { SearchIcon, AddIcon, EditIcon, DeleteIcon, ViewIcon } from 'tdesign-icons-react';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PageTable from '../../components/PageTable';
 import ConfirmDialog from '../../components/ConfirmDialog';
 // import axios from 'axios';
+
+// 模拟组件，实际项目中应该从UI库导入
+const Tag = ({ theme, children }) => (
+  <span style={{
+    padding: '2px 8px',
+    borderRadius: '4px',
+    fontSize: '12px',
+    backgroundColor: theme === 'success' ? '#e6f7ff' : theme === 'warning' ? '#fff7e6' : '#f5f5f5',
+    color: theme === 'success' ? '#1890ff' : theme === 'warning' ? '#fa8c16' : '#666',
+    border: `1px solid ${theme === 'success' ? '#91d5ff' : theme === 'warning' ? '#ffd591' : '#d9d9d9'}`
+  }}>{children}</span>
+);
+
+const Image = ({ src, width, height, style, fallback }) => (
+  <img 
+    src={src} 
+    width={width} 
+    height={height} 
+    style={style}
+    onError={(e) => { e.target.src = fallback; }}
+    alt=""
+  />
+);
+
+const Card = ({ children }) => (
+  <div style={{
+    backgroundColor: '#fff',
+    borderRadius: '8px',
+    padding: '16px',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+  }}>{children}</div>
+);
+
+const Space = ({ children, wrap }) => (
+  <div style={{
+    display: 'flex',
+    gap: '8px',
+    flexWrap: wrap ? 'wrap' : 'nowrap',
+    alignItems: 'center'
+  }}>{children}</div>
+);
+
+const Button = ({ children, theme, variant, size, icon, onClick }) => (
+  <button
+    onClick={onClick}
+    style={{
+      padding: size === 'small' ? '4px 8px' : '8px 16px',
+      borderRadius: '4px',
+      border: variant === 'outline' ? '1px solid #d9d9d9' : theme === 'primary' ? 'none' : '1px solid #d9d9d9',
+      backgroundColor: theme === 'primary' ? '#1890ff' : variant === 'text' ? 'transparent' : '#fff',
+      color: theme === 'primary' ? '#fff' : theme === 'danger' ? '#ff4d4f' : theme === 'success' ? '#52c41a' : theme === 'warning' ? '#fa8c16' : '#666',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px'
+    }}
+  >
+    {icon}
+    {children}
+  </button>
+);
+
+const Input = ({ placeholder, value, onChange, style }) => (
+  <input
+    type="text"
+    placeholder={placeholder}
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    style={{
+      padding: '8px 12px',
+      border: '1px solid #d9d9d9',
+      borderRadius: '4px',
+      ...style
+    }}
+  />
+);
+
+const Select = ({ placeholder, value, onChange, options, style }) => (
+  <select
+    value={value}
+    onChange={(e) => onChange(e.target.value)}
+    style={{
+      padding: '8px 12px',
+      border: '1px solid #d9d9d9',
+      borderRadius: '4px',
+      ...style
+    }}
+  >
+    <option value="">{placeholder}</option>
+    {options.map(option => (
+      <option key={option.value} value={option.value}>{option.label}</option>
+    ))}
+  </select>
+);
+
+// 模拟图标组件
+const SearchIcon = () => <span>🔍</span>;
+const AddIcon = () => <span>➕</span>;
+const EditIcon = () => <span>✏️</span>;
+const DeleteIcon = () => <span>🗑️</span>;
 
 const NewsList = () => {
   const navigate = useNavigate();
@@ -78,7 +177,6 @@ const NewsList = () => {
       }, 800);
     } catch (error) {
       console.error('获取资讯列表失败:', error);
-      MessagePlugin.error('获取资讯列表失败');
       setLoading(false);
     }
   };
@@ -133,12 +231,10 @@ const NewsList = () => {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      MessagePlugin.success('删除成功');
       setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null, loading: false });
       fetchNewsList(); // 刷新列表
     } catch (error) {
       console.error('删除失败:', error);
-      MessagePlugin.error('删除失败');
       setConfirmDialog(prev => ({ ...prev, loading: false }));
     }
   };
@@ -151,17 +247,10 @@ const NewsList = () => {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 500));
       
-      const statusText = {
-        published: '发布',
-        offline: '下线',
-        draft: '转为草稿',
-      }[newStatus];
-      
-      MessagePlugin.success(`${statusText}成功`);
+      console.log(`更新资讯 ${record.id} 状态为 ${newStatus}`);
       fetchNewsList(); // 刷新列表
     } catch (error) {
       console.error('状态更新失败:', error);
-      MessagePlugin.error('状态更新失败');
     }
   };
 

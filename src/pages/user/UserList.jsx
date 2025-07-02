@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Button, Space, Tag, Select, Avatar, MessagePlugin } from 'tdesign-react';
-import { SearchIcon, ViewIcon, BanIcon, CheckCircleIcon } from 'tdesign-icons-react';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PageTable from '../../components/PageTable';
 import ConfirmDialog from '../../components/ConfirmDialog';
@@ -85,7 +84,7 @@ const UserList = () => {
       }, 800);
     } catch (error) {
       console.error('获取用户列表失败:', error);
-      MessagePlugin.error('获取用户列表失败');
+      alert('获取用户列表失败');
       setLoading(false);
     }
   };
@@ -146,12 +145,12 @@ const UserList = () => {
         banned: '禁用',
       }[newStatus];
       
-      MessagePlugin.success(`${actionText}成功`);
+      alert(`${actionText}成功`);
       setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null, loading: false });
       fetchUserList(); // 刷新列表
     } catch (error) {
       console.error('状态更新失败:', error);
-      MessagePlugin.error('状态更新失败');
+      alert('状态更新失败');
       setConfirmDialog(prev => ({ ...prev, loading: false }));
     }
   };

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Input, Button, Space, Tag, Select, DatePicker, MessagePlugin } from 'tdesign-react';
-import { SearchIcon, ViewIcon } from 'tdesign-icons-react';
+// import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import PageTable from '../../components/PageTable';
 // import axios from 'axios';
@@ -73,7 +72,7 @@ const ActivityList = () => {
       }, 800);
     } catch (error) {
       console.error('获取活动列表失败:', error);
-      MessagePlugin.error('获取活动列表失败');
+      alert('获取活动列表失败');
       setLoading(false);
     }
   };
