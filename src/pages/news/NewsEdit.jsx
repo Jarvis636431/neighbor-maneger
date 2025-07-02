@@ -92,17 +92,16 @@ const NewsEdit = () => {
 
   const handleSaveDraft = async () => {
     try {
-      const values = await form.validate();
+      await form.validate();
       setSubmitLoading(true);
       
-      const formData = {
-        ...values,
-        coverImage: fileList.length > 0 ? fileList[0].url : '',
-        status: 'draft',
-      };
-      
       // TODO: 替换为实际的API调用
-      // await axios.post('/api/news/draft', formData);
+      // const values = await form.validate();
+      // await axios.post('/api/news/draft', {
+      //   ...values,
+      //   coverImage: fileList.length > 0 ? fileList[0].url : '',
+      //   status: 'draft',
+      // });
       
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -147,7 +146,7 @@ const NewsEdit = () => {
       return true;
     },
     // 模拟上传成功
-    customRequest: ({ file, onSuccess, onError }) => {
+    customRequest: ({ file, onSuccess }) => {
       setTimeout(() => {
         const mockUrl = URL.createObjectURL(file);
         onSuccess({

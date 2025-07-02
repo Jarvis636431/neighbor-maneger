@@ -97,7 +97,7 @@ const SystemSettings = () => {
     }
   };
 
-  const handleSubmit = async () => {
+  const handleSave = async () => {
     try {
       setSaveLoading(true);
       

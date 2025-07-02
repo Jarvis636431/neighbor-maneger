@@ -11,37 +11,7 @@ const PointsAdjust = () => {
   const [searchLoading, setSearchLoading] = useState(false);
   const [userOptions, setUserOptions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [adjustType, setAdjustType] = useState('add');
-  const [points, setPoints] = useState(0);
-  const [reason, setReason] = useState('');
-  const [submitLoading, setSubmitLoading] = useState(false);
 
-  // 模拟用户数据
-  const mockUsers = [
-    { id: 1, username: 'user001', nickname: '环保达人', avatar: '', currentPoints: 1250 },
-    { id: 2, username: 'user002', nickname: '绿色生活', avatar: '', currentPoints: 980 },
-    { id: 3, username: 'user003', nickname: '低碳先锋', avatar: '', currentPoints: 1580 },
-    { id: 4, username: 'user004', nickname: '节能小能手', avatar: '', currentPoints: 750 },
-    { id: 5, username: 'user005', nickname: '减排专家', avatar: '', currentPoints: 2100 },
-  ];
-
-  // 计算最终积分
-  const calculateFinalPoints = () => {
-    const values = form.getFieldsValue();
-    if (!selectedUser || !values.adjustType || !values.points) return selectedUser?.points || 0;
-    
-    const currentPoints = selectedUser.points;
-    switch (values.adjustType) {
-      case 'add':
-        return currentPoints + values.points;
-      case 'subtract':
-        return Math.max(0, currentPoints - values.points);
-      case 'set':
-        return values.points;
-      default:
-        return currentPoints;
-    }
-  };
 
   const adjustTypeOptions = [
     { label: '增加积分', value: 'add' },
@@ -76,7 +46,7 @@ const PointsAdjust = () => {
             username: `user${userId}`,
             nickname: `绿邻居${userId}`,
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${userId}`,
-            points: Math.floor(Math.random() * 5000) + 100,
+            currentPoints: Math.floor(Math.random() * 5000) + 100,
             phone: `138****${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
           };
         });
@@ -87,7 +57,7 @@ const PointsAdjust = () => {
               <Avatar src={user.avatar} size="small" />
               <div>
                 <div>{user.nickname}</div>
-                <div style={{ fontSize: '12px', color: '#666' }}>@{user.username} | 当前积分: {user.points}</div>
+                <div style={{ fontSize: '12px', color: '#666' }}>@{user.username} | 当前积分: {user.currentPoints}</div>
               </div>
             </div>
           ),
@@ -108,27 +78,9 @@ const PointsAdjust = () => {
     form.setFieldsValue({ userId: value });
   };
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async () => {
     try {
       setLoading(true);
-      
-      // 计算最终积分
-      let finalPoints;
-      const currentPoints = selectedUser?.points || 0;
-      
-      switch (values.adjustType) {
-        case 'add':
-          finalPoints = currentPoints + values.points;
-          break;
-        case 'subtract':
-          finalPoints = Math.max(0, currentPoints - values.points);
-          break;
-        case 'set':
-          finalPoints = values.points;
-          break;
-        default:
-          finalPoints = currentPoints;
-      }
       
       // TODO: 替换为实际的API调用
       // await axios.post('/api/points/adjust', {
@@ -157,7 +109,7 @@ const PointsAdjust = () => {
       return null;
     }
     
-    const currentPoints = selectedUser.points;
+    const currentPoints = selectedUser.currentPoints;
     let finalPoints;
     let changeText;
     
@@ -248,7 +200,7 @@ const PointsAdjust = () => {
                 <div>
                   <div style={{ fontWeight: 'bold' }}>{selectedUser.nickname}</div>
                   <div style={{ fontSize: '12px', color: '#666' }}>@{selectedUser.username}</div>
-                  <div style={{ fontSize: '12px', color: '#666' }}>当前积分: {selectedUser.points}</div>
+                  <div style={{ fontSize: '12px', color: '#666' }}>当前积分: {selectedUser.currentPoints}</div>
                 </div>
               </div>
             </div>

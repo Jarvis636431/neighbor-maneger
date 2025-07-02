@@ -75,7 +75,7 @@ const PointsList = () => {
             avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${index}`,
             type: type,
             points: points,
-            description: getPointsDescription(type, points),
+            description: getPointsDescription(type),
             relatedId: type === 'activity' ? Math.floor(Math.random() * 100) + 1 : null,
             relatedTitle: type === 'activity' ? `环保活动${Math.floor(Math.random() * 100) + 1}` : null,
             beforePoints: Math.floor(Math.random() * 2000) + 500,
@@ -102,7 +102,7 @@ const PointsList = () => {
     }
   };
 
-  const getPointsDescription = (type, points) => {
+  const getPointsDescription = (type) => {
     const descriptions = {
       checkin: '每日签到奖励',
       activity: '参与环保活动',
@@ -141,21 +141,19 @@ const PointsList = () => {
     navigate('/points/adjust');
   };
 
-  const handleAdjustPoints = (record) => {
-    navigate(`/points/adjust/${record.userId}`);
-  };
 
-  const handleDelete = (record) => {
+
+  const handleDelete = () => {
     setConfirmDialog({
       visible: true,
       title: '确认删除',
       content: `确定要删除这条积分记录吗？删除后无法恢复。`,
-      onConfirm: () => performDelete(record.id),
+      onConfirm: () => performDelete(),
       loading: false,
     });
   };
 
-  const performDelete = async (recordId) => {
+  const performDelete = async () => {
     try {
       setConfirmDialog(prev => ({ ...prev, loading: true }));
       
@@ -188,15 +186,7 @@ const PointsList = () => {
     return <Tag theme={config.color}>{config.text}</Tag>;
   };
 
-  const getPointsDisplay = (points) => {
-    const color = points > 0 ? '#52c41a' : '#ff4d4f';
-    const prefix = points > 0 ? '+' : '';
-    return (
-      <span style={{ color, fontWeight: 'bold' }}>
-        {prefix}{points}
-      </span>
-    );
-  };
+
 
   const columns = [
     {
@@ -228,7 +218,15 @@ const PointsList = () => {
       colKey: 'points',
       title: '积分变动',
       width: 100,
-      cell: ({ row }) => getPointsDisplay(row.points),
+      cell: ({ row }) => {
+        const color = row.points > 0 ? '#52c41a' : '#ff4d4f';
+        const prefix = row.points > 0 ? '+' : '';
+        return (
+          <span style={{ color, fontWeight: 'bold' }}>
+            {prefix}{row.points}
+          </span>
+        );
+      },
     },
     {
       colKey: 'balance',
@@ -288,7 +286,7 @@ const PointsList = () => {
               size="small"
               theme="danger"
               icon={<DeleteIcon />}
-              onClick={() => handleDelete(row)}
+              onClick={handleDelete}
             >
               删除
             </Button>

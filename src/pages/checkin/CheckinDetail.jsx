@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Descriptions, Avatar, Tag, Button, Space, MessagePlugin, Image, Textarea } from 'tdesign-react';
-import { ArrowLeftIcon, CheckIcon, CloseIcon, LocationIcon, TimeIcon, PhoneIcon } from 'tdesign-icons-react';
+import { ArrowLeftIcon, CheckIcon, CloseIcon, LocationIcon, TimeIcon, PhoneIcon, CheckCircleIcon, CloseCircleIcon } from 'tdesign-icons-react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ConfirmDialog from '../../components/ConfirmDialog';
 // import axios from 'axios';
@@ -9,9 +9,9 @@ const CheckinDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [checkinData, setCheckinData] = useState(null);
+  const [checkinInfo, setCheckinInfo] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
-  const [showRejectInput, setShowRejectInput] = useState(false);
+  const [rejectDialogVisible, setRejectDialogVisible] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({
     visible: false,
     title: '',
