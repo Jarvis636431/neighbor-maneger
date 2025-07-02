@@ -7,14 +7,11 @@ const SimpleLayout = () => {
   const location = useLocation();
 
   const menuItems = [
-    { path: '/', label: '首页' },
-    { path: '/team/list', label: '队伍列表' },
-    { path: '/team/audit', label: '队伍审核' },
-    { path: '/activity/list', label: '活动列表' },
-    { path: '/activity/audit', label: '活动审核' },
-    { path: '/news/list', label: '资讯列表' },
-    { path: '/news/edit', label: '发布资讯' },
-    { path: '/user/list', label: '用户列表' },
+    { path: '/', label: '首页', icon: '🏠' },
+    { path: '/team/list', label: '队伍管理', icon: '👥' },
+    { path: '/activity/list', label: '活动管理', icon: '🎯' },
+    { path: '/user/list', label: '用户管理', icon: '👤' },
+    { path: '/news/list', label: '资讯管理', icon: '📰' },
   ];
 
   const handleMenuClick = (path) => {
@@ -67,9 +64,12 @@ const SimpleLayout = () => {
                 cursor: 'pointer',
                 backgroundColor: location.pathname === item.path ? '#1890ff' : 'transparent',
                 color: 'white',
-                fontSize: collapsed ? '0' : '14px',
+                fontSize: '14px',
                 whiteSpace: 'nowrap',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}
               onMouseEnter={(e) => {
                 if (location.pathname !== item.path) {
@@ -82,7 +82,8 @@ const SimpleLayout = () => {
                 }
               }}
             >
-              {!collapsed && item.label}
+              <span style={{ fontSize: '16px' }}>{item.icon}</span>
+              {!collapsed && <span>{item.label}</span>}
             </div>
           ))}
         </div>
