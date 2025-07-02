@@ -127,7 +127,7 @@ const TeamList = () => {
   ];
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <Card>
         <div style={{ marginBottom: '16px' }}>
           <Space>

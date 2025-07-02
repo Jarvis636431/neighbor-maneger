@@ -289,7 +289,7 @@ const NewsList = () => {
   ];
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <Card>
         <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Space wrap>
