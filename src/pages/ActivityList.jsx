@@ -188,10 +188,13 @@ const ActivityList = () => {
 
   const confirmApprove = () => {
     if (selectedActivity) {
-      setTableData((prevData) =>
-        prevData.map((item) =>
-          item.id === selectedActivity.id
-            ? { ...item, status: "approved" }
+      // 这里应该调用实际的审核API
+      console.log('审核通过活动:', selectedActivity.id);
+      
+      setTableData(prevData => 
+        prevData.map(item => 
+          item.id === selectedActivity.id 
+            ? { ...item, status: 'approved' }
             : item
         )
       );
@@ -203,10 +206,13 @@ const ActivityList = () => {
 
   const confirmReject = () => {
     if (selectedActivity) {
-      setTableData((prevData) =>
-        prevData.map((item) =>
-          item.id === selectedActivity.id
-            ? { ...item, status: "rejected" }
+      // 这里应该调用实际的拒绝API
+      console.log('拒绝活动:', selectedActivity.id);
+      
+      setTableData(prevData => 
+        prevData.map(item => 
+          item.id === selectedActivity.id 
+            ? { ...item, status: 'rejected' }
             : item
         )
       );

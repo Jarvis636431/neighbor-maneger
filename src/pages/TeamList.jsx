@@ -102,7 +102,6 @@ const TeamList = () => {
     try {
       // 这里应该调用实际的审核API
       console.log('审核通过队伍:', record.id);
-      alert('审核成功！');
       
       // 更新本地数据
       setTableData(prev => prev.map(item => 
@@ -120,7 +119,6 @@ const TeamList = () => {
     try {
       // 这里应该调用实际的拒绝API
       console.log('拒绝队伍:', record.id);
-      alert('拒绝成功！');
       
       // 更新本地数据
       setTableData(prev => prev.map(item => 
