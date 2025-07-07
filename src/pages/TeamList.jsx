@@ -1,40 +1,64 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, Button, Input, Tag, Space } from '../components/ui';
+import { Card, Button, Input, Tag, Space, Select } from '../components/ui';
 import PageTable from '../components/PageTable';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 const TeamList = () => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [statusFilter, setStatusFilter] = useState(''); // 状态筛选
   const [tableData, setTableData] = useState([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     total: 0,
   });
+  const [confirmDialog, setConfirmDialog] = useState({
+    visible: false,
+    title: '',
+    content: '',
+    onConfirm: null,
+  });
 
   useEffect(() => {
     fetchTeamList();
-  }, [pagination.current, pagination.pageSize]);
+  }, [pagination.current, pagination.pageSize, statusFilter]);
 
   const fetchTeamList = async () => {
     try {
       setLoading(true);
       // 模拟数据
       setTimeout(() => {
-        const mockData = Array.from({ length: pagination.pageSize }, (_, index) => ({
-          id: (pagination.current - 1) * pagination.pageSize + index + 1,
-          name: `绿色环保队${(pagination.current - 1) * pagination.pageSize + index + 1}`,
+        let mockData = Array.from({ length: 50 }, (_, index) => ({
+          id: index + 1,
+          name: `绿色环保队${index + 1}`,
           leader: `队长${index + 1}`,
           memberCount: Math.floor(Math.random() * 50) + 10,
-          status: Math.random() > 0.3 ? 'approved' : 'pending',
+          status: Math.random() > 0.5 ? 'approved' : 'pending',
           createTime: '2024-01-15 10:30:00',
           description: '致力于环保事业，推广绿色生活理念',
         }));
         
-        setTableData(mockData);
-        setPagination(prev => ({ ...prev, total: 156 }));
+        // 根据搜索条件筛选
+        if (searchValue) {
+          mockData = mockData.filter(item => 
+            item.name.includes(searchValue) || item.leader.includes(searchValue)
+          );
+        }
+        
+        // 根据状态筛选
+        if (statusFilter) {
+          mockData = mockData.filter(item => item.status === statusFilter);
+        }
+        
+        // 分页处理
+        const total = mockData.length;
+        const start = (pagination.current - 1) * pagination.pageSize;
+        const end = start + pagination.pageSize;
+        const pageData = mockData.slice(start, end);
+        
+        setTableData(pageData);
+        setPagination(prev => ({ ...prev, total }));
         setLoading(false);
       }, 800);
     } catch (error) {
@@ -49,8 +73,38 @@ const TeamList = () => {
     fetchTeamList();
   };
 
-  const handleViewDetail = (record) => {
-    navigate(`/team/detail/${record.id}`);
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value);
+    setPagination(prev => ({ ...prev, current: 1 }));
+  };
+
+
+
+  const handleApprove = (record) => {
+    setConfirmDialog({
+      visible: true,
+      title: '审核确认',
+      content: `确定要审核通过队伍「${record.name}」吗？`,
+      onConfirm: () => confirmApprove(record),
+    });
+  };
+
+  const confirmApprove = async (record) => {
+    try {
+      // 这里应该调用实际的审核API
+      console.log('审核通过队伍:', record.id);
+      alert('审核成功！');
+      
+      // 更新本地数据
+      setTableData(prev => prev.map(item => 
+        item.id === record.id ? { ...item, status: 'approved' } : item
+      ));
+      
+      setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null });
+    } catch (error) {
+      console.error('审核失败:', error);
+      alert('审核失败，请重试');
+    }
   };
 
   const getStatusTag = (status) => {
@@ -115,13 +169,17 @@ const TeamList = () => {
       title: '操作',
       width: 120,
       cell: ({ row }) => (
-        <Button
-          variant="outline"
-          size="small"
-          onClick={() => handleViewDetail(row)}
-        >
-          👁️ 查看
-        </Button>
+        <Space>
+          {row.status === 'pending' ? (
+            <Button
+              theme="primary"
+              size="small"
+              onClick={() => handleApprove(row)}
+            >
+              审核
+            </Button>
+          ) : null}
+        </Space>
       ),
     },
   ];
@@ -137,6 +195,17 @@ const TeamList = () => {
               onChange={setSearchValue}
               style={{ width: '300px' }}
             />
+            <Select
+              placeholder="选择状态"
+              value={statusFilter}
+              onChange={handleStatusFilterChange}
+              style={{ width: '150px' }}
+              clearable
+            >
+              <Select.Option value="approved">已通过</Select.Option>
+              <Select.Option value="pending">待审核</Select.Option>
+              <Select.Option value="rejected">已拒绝</Select.Option>
+            </Select>
             <Button
               theme="primary"
               onClick={handleSearch}
@@ -154,6 +223,14 @@ const TeamList = () => {
           onPaginationChange={handlePageChange}
         />
       </Card>
+      
+      <ConfirmDialog
+        visible={confirmDialog.visible}
+        title={confirmDialog.title}
+        content={confirmDialog.content}
+        onConfirm={confirmDialog.onConfirm}
+        onCancel={() => setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null })}
+      />
     </div>
   );
 };
