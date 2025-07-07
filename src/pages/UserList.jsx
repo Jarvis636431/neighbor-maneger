@@ -131,7 +131,6 @@ const UserList = () => {
       cell: ({ row }) => (
         <Space>
           <Button
-            variant="text"
             size="small"
             onClick={() => handleViewDetail(row)}
           >

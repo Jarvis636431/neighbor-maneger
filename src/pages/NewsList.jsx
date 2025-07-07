@@ -273,31 +273,31 @@ const NewsList = () => {
       width: 200,
       cell: ({ row }) => (
         <Space>
-          <Button variant="text" size="small" onClick={() => handleEdit(row)}>
+          <Button
+            size="small"
+            onClick={() => handleEdit(row)}
+          >
             编辑
           </Button>
-          {row.status === "draft" && (
+          {row.status === 'draft' && (
             <Button
-              variant="text"
               size="small"
               theme="success"
-              onClick={() => handleToggleStatus(row, "published")}
+              onClick={() => handleToggleStatus(row, 'published')}
             >
               发布
             </Button>
           )}
-          {row.status === "published" && (
+          {row.status === 'published' && (
             <Button
-              variant="text"
               size="small"
               theme="warning"
-              onClick={() => handleToggleStatus(row, "offline")}
+              onClick={() => handleToggleStatus(row, 'offline')}
             >
               下线
             </Button>
           )}
           <Button
-            variant="text"
             size="small"
             theme="danger"
             onClick={() => handleDelete(row)}
@@ -337,7 +337,7 @@ const NewsList = () => {
               clearable
             />
             <Button theme="primary" onClick={handleSearch}>
-              🔍 搜索
+              搜索
             </Button>
             <Button variant="outline" onClick={handleReset}>
               重置
@@ -345,7 +345,7 @@ const NewsList = () => {
           </Space>
 
           <Button theme="primary" onClick={handleCreate}>
-            ➕ 发布资讯
+            发布资讯
           </Button>
         </div>
 
