@@ -37,42 +37,27 @@ const router = createBrowserRouter([
       },
       {
         path: 'team',
-        children: [
-          {
-            path: 'list',
-            element: <TeamList />,
-          },
-          {
-            path: 'detail/:id',
-            element: <PlaceholderPage title="队伍详情" />,
-          },
-        ],
+        element: <TeamList />,
+      },
+      {
+        path: 'team/detail/:id',
+        element: <PlaceholderPage title="队伍详情" />,
       },
       {
         path: 'activity',
-        children: [
-          {
-            path: 'list',
-            element: <ActivityList />,
-          },
-          {
-            path: 'detail/:id',
-            element: <PlaceholderPage title="活动详情" />,
-          },
-        ],
+        element: <ActivityList />,
+      },
+      {
+        path: 'activity/detail/:id',
+        element: <PlaceholderPage title="活动详情" />,
       },
       {
         path: 'user',
-        children: [
-          {
-            path: 'list',
-            element: <UserList />,
-          },
-          {
-            path: 'detail/:id',
-            element: <PlaceholderPage title="用户详情" />,
-          },
-        ],
+        element: <UserList />,
+      },
+      {
+        path: 'user/detail/:id',
+        element: <PlaceholderPage title="用户详情" />,
       },
       {
         path: 'news',

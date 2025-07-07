@@ -16,9 +16,9 @@ const Layout = () => {
 
   const menuItems = [
     { path: '/', label: '首页', icon: '🏠' },
-    { path: '/team/list', label: '队伍管理', icon: '👥' },
-    { path: '/activity/list', label: '活动管理', icon: '🎯' },
-    { path: '/user/list', label: '用户管理', icon: '👤' },
+    { path: '/team', label: '队伍管理', icon: '👥' },
+    { path: '/activity', label: '活动管理', icon: '🎯' },
+    { path: '/user', label: '用户管理', icon: '👤' },
     { path: '/news', label: '资讯管理', icon: '📰' },
   ];
 
@@ -70,7 +70,8 @@ const Layout = () => {
               style={{
                 padding: '12px 16px',
                 cursor: 'pointer',
-                backgroundColor: location.pathname === item.path ? '#1890ff' : 'transparent',
+                backgroundColor: location.pathname.startsWith(item.path) && item.path !== '/' ? '#1890ff' : 
+                                 location.pathname === item.path ? '#1890ff' : 'transparent',
                 color: 'white',
                 fontSize: '14px',
                 whiteSpace: 'nowrap',
@@ -80,12 +81,14 @@ const Layout = () => {
                 gap: '8px'
               }}
               onMouseEnter={(e) => {
-                if (location.pathname !== item.path) {
+                const isActive = location.pathname.startsWith(item.path) && item.path !== '/' ? true : location.pathname === item.path;
+                if (!isActive) {
                   e.target.style.backgroundColor = '#333';
                 }
               }}
               onMouseLeave={(e) => {
-                if (location.pathname !== item.path) {
+                const isActive = location.pathname.startsWith(item.path) && item.path !== '/' ? true : location.pathname === item.path;
+                if (!isActive) {
                   e.target.style.backgroundColor = 'transparent';
                 }
               }}
