@@ -62,7 +62,7 @@ const TeamList = () => {
       alert('获取队伍列表失败');
       setLoading(false);
     }
-  }, [searchValue, statusFilter, pagination]);
+  }, [searchValue, statusFilter, pagination.current, pagination.pageSize]);
 
   useEffect(() => {
     fetchTeamList();
@@ -89,6 +89,15 @@ const TeamList = () => {
     });
   };
 
+  const handleReject = (record) => {
+    setConfirmDialog({
+      visible: true,
+      title: '审核确认',
+      content: `确定要拒绝队伍「${record.name}」吗？`,
+      onConfirm: () => confirmReject(record),
+    });
+  };
+
   const confirmApprove = async (record) => {
     try {
       // 这里应该调用实际的审核API
@@ -104,6 +113,24 @@ const TeamList = () => {
     } catch (error) {
       console.error('审核失败:', error);
       alert('审核失败，请重试');
+    }
+  };
+
+  const confirmReject = async (record) => {
+    try {
+      // 这里应该调用实际的拒绝API
+      console.log('拒绝队伍:', record.id);
+      alert('拒绝成功！');
+      
+      // 更新本地数据
+      setTableData(prev => prev.map(item => 
+        item.id === record.id ? { ...item, status: 'rejected' } : item
+      ));
+      
+      setConfirmDialog({ visible: false, title: '', content: '', onConfirm: null });
+    } catch (error) {
+      console.error('拒绝失败:', error);
+      alert('拒绝失败，请重试');
     }
   };
 
@@ -160,7 +187,7 @@ const TeamList = () => {
     },
     {
       colKey: 'description',
-      title: '描述',
+      title: '简介',
       width: 200,
       ellipsis: true,
     },
@@ -171,13 +198,22 @@ const TeamList = () => {
       cell: ({ row }) => (
         <Space>
           {row.status === 'pending' ? (
-            <Button
-              theme="primary"
-              size="small"
-              onClick={() => handleApprove(row)}
-            >
-              审核
-            </Button>
+            <>
+              <Button
+                theme="primary"
+                size="small"
+                onClick={() => handleApprove(row)}
+              >
+                通过
+              </Button>
+              <Button
+                theme="danger"
+                size="small"
+                onClick={() => handleReject(row)}
+              >
+                拒绝
+              </Button>
+            </>
           ) : null}
         </Space>
       ),
@@ -210,7 +246,7 @@ const TeamList = () => {
               theme="primary"
               onClick={handleSearch}
             >
-              🔍 搜索
+              搜索
             </Button>
           </Space>
         </div>
