@@ -60,22 +60,125 @@ const PageTable = ({
             上一页
           </button>
           
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            <button
-              key={page}
-              onClick={() => handlePageChange(page)}
-              style={{
-                padding: '4px 8px',
-                border: '1px solid #d9d9d9',
-                borderRadius: '4px',
-                backgroundColor: page === current ? '#1890ff' : '#fff',
-                color: page === current ? '#fff' : '#333',
-                cursor: 'pointer'
-              }}
-            >
-              {page}
-            </button>
-          ))}
+          {(() => {
+            const maxVisible = 10;
+            const pages = [];
+            
+            if (totalPages <= maxVisible) {
+              // 如果总页数不超过最大显示数，显示所有页码
+              for (let i = 1; i <= totalPages; i++) {
+                pages.push(
+                  <button
+                    key={i}
+                    onClick={() => handlePageChange(i)}
+                    style={{
+                      padding: '4px 8px',
+                      border: '1px solid #d9d9d9',
+                      borderRadius: '4px',
+                      backgroundColor: i === current ? '#1890ff' : '#fff',
+                      color: i === current ? '#fff' : '#333',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {i}
+                  </button>
+                );
+              }
+            } else {
+              // 页数过多时的处理逻辑
+              const halfVisible = Math.floor((maxVisible - 3) / 2); // 减去首页、末页和省略号的位置
+              
+              // 始终显示第一页
+              pages.push(
+                <button
+                  key={1}
+                  onClick={() => handlePageChange(1)}
+                  style={{
+                    padding: '4px 8px',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '4px',
+                    backgroundColor: 1 === current ? '#1890ff' : '#fff',
+                    color: 1 === current ? '#fff' : '#333',
+                    cursor: 'pointer'
+                  }}
+                >
+                  1
+                </button>
+              );
+              
+              let startPage, endPage;
+              
+              if (current <= halfVisible + 2) {
+                // 当前页靠近开始
+                startPage = 2;
+                endPage = maxVisible - 2;
+              } else if (current >= totalPages - halfVisible - 1) {
+                // 当前页靠近结束
+                startPage = totalPages - maxVisible + 3;
+                endPage = totalPages - 1;
+              } else {
+                // 当前页在中间
+                startPage = current - halfVisible;
+                endPage = current + halfVisible;
+              }
+              
+              // 添加左侧省略号
+              if (startPage > 2) {
+                pages.push(
+                  <span key="left-ellipsis" style={{ padding: '4px 8px', color: '#999' }}>...</span>
+                );
+              }
+              
+              // 添加中间页码
+              for (let i = startPage; i <= endPage; i++) {
+                pages.push(
+                  <button
+                    key={i}
+                    onClick={() => handlePageChange(i)}
+                    style={{
+                      padding: '4px 8px',
+                      border: '1px solid #d9d9d9',
+                      borderRadius: '4px',
+                      backgroundColor: i === current ? '#1890ff' : '#fff',
+                      color: i === current ? '#fff' : '#333',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {i}
+                  </button>
+                );
+              }
+              
+              // 添加右侧省略号
+              if (endPage < totalPages - 1) {
+                pages.push(
+                  <span key="right-ellipsis" style={{ padding: '4px 8px', color: '#999' }}>...</span>
+                );
+              }
+              
+              // 始终显示最后一页
+              if (totalPages > 1) {
+                pages.push(
+                  <button
+                    key={totalPages}
+                    onClick={() => handlePageChange(totalPages)}
+                    style={{
+                      padding: '4px 8px',
+                      border: '1px solid #d9d9d9',
+                      borderRadius: '4px',
+                      backgroundColor: totalPages === current ? '#1890ff' : '#fff',
+                      color: totalPages === current ? '#fff' : '#333',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {totalPages}
+                  </button>
+                );
+              }
+            }
+            
+            return pages;
+          })()}
           
           <button
             onClick={() => handlePageChange(current + 1)}
