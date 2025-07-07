@@ -1,45 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import PageTable from '../components/PageTable';
-import { Card, Button, Input, Tag, Select, Space } from '../components/ui';
+import React, { useState, useEffect, useCallback } from "react";
+import PageTable from "../components/PageTable";
+import { Card, Button, Input, Tag, Select, Space } from "../components/ui";
+import ConfirmDialog from "../components/ConfirmDialog";
 
 const DatePicker = ({ placeholder, value, onChange, style }) => (
-  <div style={{ display: 'flex', gap: '8px', ...style }}>
+  <div style={{ display: "flex", gap: "8px", ...style }}>
     <input
       type="date"
-      placeholder={placeholder?.[0] || '开始日期'}
-      value={value?.[0] || ''}
-      onChange={(e) => onChange([e.target.value, value?.[1] || ''])}
+      placeholder={placeholder?.[0] || "开始日期"}
+      value={value?.[0] || ""}
+      onChange={(e) => onChange([e.target.value, value?.[1] || ""])}
       style={{
-        padding: '8px 12px',
-        border: '1px solid #d9d9d9',
-        borderRadius: '6px',
-        fontSize: '14px'
+        padding: "8px 12px",
+        border: "1px solid #d9d9d9",
+        borderRadius: "6px",
+        fontSize: "14px",
       }}
     />
     <input
       type="date"
-      placeholder={placeholder?.[1] || '结束日期'}
-      value={value?.[1] || ''}
-      onChange={(e) => onChange([value?.[0] || '', e.target.value])}
+      placeholder={placeholder?.[1] || "结束日期"}
+      value={value?.[1] || ""}
+      onChange={(e) => onChange([value?.[0] || "", e.target.value])}
       style={{
-        padding: '8px 12px',
-        border: '1px solid #d9d9d9',
-        borderRadius: '6px',
-        fontSize: '14px'
+        padding: "8px 12px",
+        border: "1px solid #d9d9d9",
+        borderRadius: "6px",
+        fontSize: "14px",
       }}
     />
   </div>
 );
 
 const SearchIcon = () => <span>🔍</span>;
-const ViewIcon = () => <span>👁️</span>;
 
 const ActivityList = () => {
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [searchValue, setSearchValue] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const [dateRange, setDateRange] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [pagination, setPagination] = useState({
@@ -47,19 +45,21 @@ const ActivityList = () => {
     pageSize: 10,
     total: 0,
   });
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [confirmAction, setConfirmAction] = useState(null);
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
   const statusOptions = [
-    { label: '全部状态', value: '' },
-    { label: '进行中', value: 'ongoing' },
-    { label: '已结束', value: 'finished' },
-    { label: '已取消', value: 'cancelled' },
+    { label: "全部状态", value: "" },
+    { label: "待审核", value: "pending" },
+    { label: "已通过", value: "approved" },
+    { label: "进行中", value: "ongoing" },
+    { label: "已结束", value: "finished" },
+    { label: "已拒绝", value: "rejected" },
+    { label: "已取消", value: "cancelled" },
   ];
 
-  useEffect(() => {
-    fetchActivityList();
-  }, [pagination.current, pagination.pageSize]);
-
-  const fetchActivityList = async () => {
+  const fetchActivityList = useCallback(async () => {
     try {
       setLoading(true);
       // TODO: 替换为实际的API调用
@@ -75,148 +75,242 @@ const ActivityList = () => {
       // });
       // setTableData(response.data.list);
       // setPagination(prev => ({ ...prev, total: response.data.total }));
-      
+
       // 模拟数据
       setTimeout(() => {
-        const mockData = Array.from({ length: pagination.pageSize }, (_, index) => {
-          const statuses = ['ongoing', 'finished', 'cancelled'];
-          const status = statuses[Math.floor(Math.random() * statuses.length)];
-          
-          return {
-            id: (pagination.current - 1) * pagination.pageSize + index + 1,
-            title: `环保活动${(pagination.current - 1) * pagination.pageSize + index + 1}`,
-            organizer: `绿色环保队${index + 1}`,
-            startTime: '2024-01-20 09:00:00',
-            endTime: '2024-01-20 17:00:00',
-            location: `活动地点${index + 1}`,
-            maxParticipants: Math.floor(Math.random() * 100) + 50,
-            currentParticipants: Math.floor(Math.random() * 80) + 20,
-            status: status,
-            createTime: '2024-01-15 10:30:00',
-            description: '这是一个关于环保的活动，旨在提高大家的环保意识。',
-          };
-        });
-        
+        let mockData = Array.from(
+          { length: pagination.pageSize },
+          (_, index) => {
+            const statuses = [
+              "pending",
+              "approved",
+              "ongoing",
+              "finished",
+              "rejected",
+              "cancelled",
+            ];
+            const status =
+              statuses[Math.floor(Math.random() * statuses.length)];
+
+            return {
+              id: (pagination.current - 1) * pagination.pageSize + index + 1,
+              title: `环保活动${
+                (pagination.current - 1) * pagination.pageSize + index + 1
+              }`,
+              organizer: `绿色环保队${index + 1}`,
+              startTime: "2024-01-20 09:00:00",
+              endTime: "2024-01-20 17:00:00",
+              location: `活动地点${index + 1}`,
+              maxParticipants: Math.floor(Math.random() * 100) + 50,
+              currentParticipants: Math.floor(Math.random() * 80) + 20,
+              status: status,
+              createTime: "2024-01-15 10:30:00",
+              description: "这是一个关于环保的活动，旨在提高大家的环保意识。",
+            };
+          }
+        );
+
+        // 根据搜索条件筛选数据
+        if (searchValue) {
+          mockData = mockData.filter(
+            (item) =>
+              item.title.includes(searchValue) ||
+              item.organizer.includes(searchValue)
+          );
+        }
+
+        if (statusFilter) {
+          mockData = mockData.filter((item) => item.status === statusFilter);
+        }
+
+        if (dateRange[0] && dateRange[1]) {
+          mockData = mockData.filter((item) => {
+            const itemDate = item.startTime.split(" ")[0];
+            return itemDate >= dateRange[0] && itemDate <= dateRange[1];
+          });
+        }
+
         setTableData(mockData);
-        setPagination(prev => ({ ...prev, total: 234 }));
+        setPagination((prev) => ({ ...prev, total: 234 }));
         setLoading(false);
       }, 800);
     } catch (error) {
-      console.error('获取活动列表失败:', error);
-      alert('获取活动列表失败');
+      console.error("获取活动列表失败:", error);
+      alert("获取活动列表失败");
       setLoading(false);
     }
-  };
+  }, [
+    searchValue,
+    statusFilter,
+    dateRange,
+    pagination.current,
+    pagination.pageSize,
+  ]);
+
+  useEffect(() => {
+    fetchActivityList();
+  }, [fetchActivityList]);
 
   const handleSearch = () => {
-    setPagination(prev => ({ ...prev, current: 1 }));
+    setPagination((prev) => ({ ...prev, current: 1 }));
     fetchActivityList();
   };
 
   const handleReset = () => {
-    setSearchValue('');
-    setStatusFilter('');
+    setSearchValue("");
+    setStatusFilter("");
     setDateRange([]);
-    setPagination(prev => ({ ...prev, current: 1 }));
+    setPagination((prev) => ({ ...prev, current: 1 }));
     setTimeout(() => {
       fetchActivityList();
     }, 100);
   };
 
   const handlePageChange = (pageInfo) => {
-    setPagination(prev => ({
+    setPagination((prev) => ({
       ...prev,
       current: pageInfo.current,
       pageSize: pageInfo.pageSize,
     }));
   };
 
-  const handleViewDetail = (record) => {
-    navigate(`/activity/detail/${record.id}`);
+  const handleApprove = (record) => {
+    setSelectedActivity(record);
+    setConfirmAction("approve");
+    setConfirmVisible(true);
+  };
+
+  const handleReject = (record) => {
+    setSelectedActivity(record);
+    setConfirmAction("reject");
+    setConfirmVisible(true);
+  };
+
+  const confirmApprove = () => {
+    if (selectedActivity) {
+      setTableData((prevData) =>
+        prevData.map((item) =>
+          item.id === selectedActivity.id
+            ? { ...item, status: "approved" }
+            : item
+        )
+      );
+      setConfirmVisible(false);
+      setSelectedActivity(null);
+      setConfirmAction(null);
+    }
+  };
+
+  const confirmReject = () => {
+    if (selectedActivity) {
+      setTableData((prevData) =>
+        prevData.map((item) =>
+          item.id === selectedActivity.id
+            ? { ...item, status: "rejected" }
+            : item
+        )
+      );
+      setConfirmVisible(false);
+      setSelectedActivity(null);
+      setConfirmAction(null);
+    }
   };
 
   const getStatusTag = (status) => {
     const statusMap = {
-      ongoing: { color: 'success', text: '进行中' },
-      finished: { color: 'default', text: '已结束' },
-      cancelled: { color: 'danger', text: '已取消' },
+      pending: { color: "warning", text: "待审核" },
+      approved: { color: "success", text: "已通过" },
+      ongoing: { color: "primary", text: "进行中" },
+      finished: { color: "default", text: "已结束" },
+      rejected: { color: "danger", text: "已拒绝" },
+      cancelled: { color: "danger", text: "已取消" },
     };
-    const config = statusMap[status] || { color: 'default', text: '未知' };
+    const config = statusMap[status] || { color: "default", text: "未知" };
     return <Tag theme={config.color}>{config.text}</Tag>;
   };
 
   const columns = [
     {
-      colKey: 'id',
-      title: 'ID',
+      colKey: "id",
+      title: "ID",
       width: 80,
     },
     {
-      colKey: 'title',
-      title: '活动标题',
+      colKey: "title",
+      title: "活动标题",
       width: 200,
     },
     {
-      colKey: 'organizer',
-      title: '主办方',
+      colKey: "organizer",
+      title: "主办方",
       width: 150,
     },
     {
-      colKey: 'startTime',
-      title: '开始时间',
+      colKey: "startTime",
+      title: "开始时间",
       width: 160,
     },
     {
-      colKey: 'location',
-      title: '活动地点',
+      colKey: "location",
+      title: "活动地点",
       width: 120,
     },
     {
-      colKey: 'participants',
-      title: '报名情况',
+      colKey: "participants",
+      title: "报名情况",
       width: 120,
       cell: ({ row }) => `${row.currentParticipants}/${row.maxParticipants}`,
     },
     {
-      colKey: 'status',
-      title: '状态',
+      colKey: "status",
+      title: "状态",
       width: 100,
       cell: ({ row }) => getStatusTag(row.status),
     },
     {
-      colKey: 'createTime',
-      title: '创建时间',
+      colKey: "createTime",
+      title: "创建时间",
       width: 160,
     },
     {
-      colKey: 'operation',
-      title: '操作',
-      width: 120,
+      colKey: "operation",
+      title: "操作",
+      width: 150,
       cell: ({ row }) => (
         <Space>
-          <Button
-            variant="text"
-            size="small"
-            icon={<ViewIcon />}
-            onClick={() => handleViewDetail(row)}
-          >
-            查看
-          </Button>
+          {row.status === "pending" && (
+            <>
+              <Button
+                theme="success"
+                size="small"
+                onClick={() => handleApprove(row)}
+              >
+                通过
+              </Button>
+              <Button
+                theme="danger"
+                size="small"
+                onClick={() => handleReject(row)}
+              >
+                拒绝
+              </Button>
+            </>
+          )}
         </Space>
       ),
     },
   ];
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div style={{ padding: "20px" }}>
       <Card>
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: "16px" }}>
           <Space wrap>
             <Input
               placeholder="搜索活动标题或主办方"
               value={searchValue}
               onChange={setSearchValue}
-              style={{ width: '250px' }}
+              style={{ width: "250px" }}
               clearable
             />
             <Select
@@ -224,34 +318,27 @@ const ActivityList = () => {
               value={statusFilter}
               onChange={setStatusFilter}
               options={statusOptions}
-              style={{ width: '120px' }}
+              style={{ width: "120px" }}
               clearable
             />
             <DatePicker
               mode="date"
               range
-              placeholder={['开始日期', '结束日期']}
+              placeholder={["开始日期", "结束日期"]}
               value={dateRange}
               onChange={setDateRange}
-              style={{ width: '280px' }}
+              style={{ width: "280px" }}
               clearable
             />
-            <Button
-              theme="primary"
-              icon={<SearchIcon />}
-              onClick={handleSearch}
-            >
+            <Button theme="primary" onClick={handleSearch}>
               搜索
             </Button>
-            <Button
-              variant="outline"
-              onClick={handleReset}
-            >
+            <Button variant="outline" onClick={handleReset}>
               重置
             </Button>
           </Space>
         </div>
-        
+
         <PageTable
           data={tableData}
           columns={columns}
@@ -260,6 +347,20 @@ const ActivityList = () => {
           onPaginationChange={handlePageChange}
         />
       </Card>
+
+      <ConfirmDialog
+        visible={confirmVisible}
+        title={confirmAction === "approve" ? "确认通过" : "确认拒绝"}
+        content={`确定要${confirmAction === "approve" ? "通过" : "拒绝"}活动「${
+          selectedActivity?.title
+        }」吗？`}
+        onConfirm={confirmAction === "approve" ? confirmApprove : confirmReject}
+        onCancel={() => {
+          setConfirmVisible(false);
+          setSelectedActivity(null);
+          setConfirmAction(null);
+        }}
+      />
     </div>
   );
 };
