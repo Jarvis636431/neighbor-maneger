@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Button, Input, Tag, Space, Select } from '../components/ui';
 import PageTable from '../components/PageTable';
 import ConfirmDialog from '../components/ConfirmDialog';
@@ -20,11 +20,7 @@ const TeamList = () => {
     onConfirm: null,
   });
 
-  useEffect(() => {
-    fetchTeamList();
-  }, [pagination.current, pagination.pageSize, statusFilter]);
-
-  const fetchTeamList = async () => {
+  const fetchTeamList = useCallback(async () => {
     try {
       setLoading(true);
       // 模拟数据
@@ -66,7 +62,11 @@ const TeamList = () => {
       alert('获取队伍列表失败');
       setLoading(false);
     }
-  };
+  }, [searchValue, statusFilter, pagination]);
+
+  useEffect(() => {
+    fetchTeamList();
+  }, [fetchTeamList]);
 
   const handleSearch = () => {
     setPagination(prev => ({ ...prev, current: 1 }));
