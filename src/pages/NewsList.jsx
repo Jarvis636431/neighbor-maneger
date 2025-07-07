@@ -74,8 +74,7 @@ const NewsList = () => {
             id: index + 1,
             title: `环保资讯${index + 1}`,
             coverImage: `https://picsum.photos/100/60?random=${index}`,
-            content:
-              "这是一篇关于环保的资讯内容，介绍了垃圾分类的重要性和具体方法...",
+            url: `https://example.com/news/${index + 1}`,
             status: status,
             author: "管理员",
             viewCount: Math.floor(Math.random() * 1000) + 100,
@@ -231,9 +230,10 @@ const NewsList = () => {
     {
       colKey: "title",
       title: "资讯标题",
-      width: 250,
+      width: 200,
       ellipsis: true,
     },
+
     {
       colKey: "author",
       title: "作者",

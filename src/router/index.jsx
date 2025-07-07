@@ -11,6 +11,7 @@ import TeamList from '../pages/TeamList';
 import ActivityList from '../pages/ActivityList';
 import UserList from '../pages/UserList';
 import NewsList from '../pages/NewsList';
+import NewsEdit from '../pages/NewsEdit';
 import Login from '../pages/Login';
 
 const router = createBrowserRouter([
@@ -75,20 +76,19 @@ const router = createBrowserRouter([
       },
       {
         path: 'news',
-        children: [
-          {
-            path: 'list',
-            element: <NewsList />,
-          },
-          {
-            path: 'detail/:id',
-            element: <PlaceholderPage title="咨询详情" />,
-          },
-          {
-            path: 'edit',
-            element: <PlaceholderPage title="发布咨询" />,
-          },
-        ],
+        element: <NewsList />,
+      },
+      {
+        path: 'news/detail/:id',
+        element: <PlaceholderPage title="咨询详情" />,
+      },
+      {
+        path: 'news/edit',
+        element: <NewsEdit />,
+      },
+      {
+        path: 'news/edit/:id',
+        element: <NewsEdit />,
       },
     ],
   },

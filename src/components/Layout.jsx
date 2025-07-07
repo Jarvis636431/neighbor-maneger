@@ -19,7 +19,7 @@ const Layout = () => {
     { path: '/team/list', label: '队伍管理', icon: '👥' },
     { path: '/activity/list', label: '活动管理', icon: '🎯' },
     { path: '/user/list', label: '用户管理', icon: '👤' },
-    { path: '/news/list', label: '资讯管理', icon: '📰' },
+    { path: '/news', label: '资讯管理', icon: '📰' },
   ];
 
   const handleMenuClick = (path) => {
