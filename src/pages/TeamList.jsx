@@ -236,12 +236,12 @@ const TeamList = () => {
               value={statusFilter}
               onChange={handleStatusFilterChange}
               style={{ width: '150px' }}
-              clearable
-            >
-              <Select.Option value="approved">已通过</Select.Option>
-              <Select.Option value="pending">待审核</Select.Option>
-              <Select.Option value="rejected">已拒绝</Select.Option>
-            </Select>
+              options={[
+                { value: 'approved', label: '已通过' },
+                { value: 'pending', label: '待审核' },
+                { value: 'rejected', label: '已拒绝' }
+              ]}
+            />
             <Button
               theme="primary"
               onClick={handleSearch}
