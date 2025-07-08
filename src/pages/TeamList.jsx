@@ -221,7 +221,14 @@ const TeamList = () => {
   return (
     <div style={{ padding: '20px' }}>
       <Card>
-        <div style={{ marginBottom: '16px' }}>
+        <div
+          style={{
+            marginBottom: '16px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <Space>
             <Input
               placeholder="搜索队伍名称或队长"
@@ -247,6 +254,10 @@ const TeamList = () => {
               搜索
             </Button>
           </Space>
+
+          <div>
+            {/* 预留位置，可以添加其他操作按钮 */}
+          </div>
         </div>
         
         <PageTable

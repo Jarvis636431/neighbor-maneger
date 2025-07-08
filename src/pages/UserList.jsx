@@ -144,7 +144,14 @@ const UserList = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Card>
-        <div style={{ marginBottom: "16px" }}>
+        <div
+          style={{
+            marginBottom: "16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Space wrap>
             <Input
               placeholder="请输入昵称"
@@ -161,6 +168,10 @@ const UserList = () => {
               重置
             </Button>
           </Space>
+
+          <div>
+            {/* 预留位置，可以添加其他操作按钮 */}
+          </div>
         </div>
 
         <PageTable

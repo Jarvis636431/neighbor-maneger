@@ -310,7 +310,14 @@ const ActivityList = () => {
   return (
     <div style={{ padding: "20px" }}>
       <Card>
-        <div style={{ marginBottom: "16px" }}>
+        <div
+          style={{
+            marginBottom: "16px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <Space wrap>
             <Input
               placeholder="搜索活动标题或主办方"
@@ -343,6 +350,10 @@ const ActivityList = () => {
               重置
             </Button>
           </Space>
+
+          <div>
+            {/* 预留位置，可以添加其他操作按钮 */}
+          </div>
         </div>
 
         <PageTable
